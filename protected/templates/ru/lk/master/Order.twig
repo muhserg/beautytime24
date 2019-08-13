@@ -1,0 +1,411 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - заказ № {{ orderModel.id }}{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center {{ lbLg }} w-100 {{ isMaxW500 }}">
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Статус:
+            </div>
+            <div class="pl-4 col">
+                <b>
+                    {{ orderModel.rusStatus.name }}
+                    {% if orderModel.status == orderStatusNotAgree and isAgreeClientThisMasterOffer == false and isAgreeClientThisSalonOffer == false %}
+                         от другого мастера или салона
+                    {% endif %}
+                </b>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Дата встречи:
+            </div>
+            <div class="pl-4 col">
+                {{ orderModel.receipt_date|default('не указано') }}
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Услуга:
+            </div>
+            <div class="pl-4 col">
+                <b>{{ orderModel.service.name }}</b>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Адрес заказа:
+            </div>
+            <div class="pl-4 col">
+                <b>{{ orderModel.address }}</b>
+            </div>
+        </div>
+
+        {% if orderModel.userType.name == salonType %}
+            <div class="row my-3">
+                <div class="col text-right px-0">
+                    От салона:
+                </div>
+                <div class="pl-4 col">
+                    {{ orderModel.clientOfsalon.name }}
+                </div>
+            </div>
+        {% else %}
+            <div class="row my-3">
+                <div class="col text-right px-0">
+                    Клиент:
+                </div>
+                <div class="pl-4 col">
+                    <a href="/lk/otherProfile?userId={{ orderModel.client.user_id }}">
+                        {{ orderModel.client.last_name }} {{ orderModel.client.first_name }}
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Описание:
+            </div>
+            <div class="pl-4 col">
+                {{ orderModel.description|default('отсутствует') }}
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Фото:
+            </div>
+            <div class="pl-4 col">
+                {% if orderPhotoUrl != null %}
+                    <img src="{{ orderPhotoUrl }}" class="w-100 img-fluid master-short-data">
+                {% else %}
+                    Нет фото.
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Место:
+            </div>
+            <div id="bind-master-id" class="pl-4 col">
+                {{ orderModel.rusPlace |default('не важно') }}
+            </div>
+        </div>
+
+        {% if orderModel.plan_price > 0 %}
+            <div class="row my-3">
+                <div class="col text-right px-0">
+                    Бюджет:
+                </div>
+                <div id="bind-master-id" class="pl-4 col">
+                    {{ orderModel.plan_price }} руб.
+                </div>
+            </div>
+        {% endif %}
+
+        {% if orderModel.total > 0 %}
+            <div class="row my-3">
+                <div class="col text-right px-0">
+                    Стоимость заказа:
+                </div>
+                <div class="pl-4 col">
+                    <b>{{ orderModel.total }} руб.</b>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if orderModel.status == orderStatusCreated
+        or (orderModel.status == orderStatusNotAgree and isAgreeClientThisMasterOffer == false and isAgreeClientThisSalonOffer == false)  %}
+        <div class="row py-4 {{ isMaxW500 }}">
+            <div class="w-100 pl-3 pb-3">
+                <textarea id="order-comment"
+                          maxlength="2000" rows="7" placeholder="Комментарий к заказу"
+                          data-val="true" data-val-required="Комментарий к заказу."
+                          class="form-control {{ controlLg }} w-100 shadow"></textarea>
+            </div>
+
+            <input id="btn-send-agree-client-to-order"
+                   class="btn btn-pink btn-brand font-weight-bold mx-auto {{ lbLg }} {{ minW_400_650 }} shadow"
+                   value="Отправить предложение"/>
+        </div>
+
+    {% elseif orderModel.status == orderStatusNotAgree and (isAgreeClientThisMasterOffer == true or isAgreeClientThisSalonOffer == true) %}
+        <div class="row py-4 {{ isMaxW500 }}">
+            <div class="w-100 pl-3 pb-3">
+                <textarea id="order-comment"
+                          maxlength="2000" rows="7" placeholder="Комментарий к заказу"
+                          data-val="true" data-val-required="Комментарий к заказу."
+                          class="form-control {{ controlLg }} w-100 shadow"></textarea>
+            </div>
+
+            <input id="btn-agree-to-order"
+                   class="btn btn-success btn-brand font-weight-bold mx-auto {{ lbLg }} {{ minW_400_650 }} shadow"
+                   value="Принять в работу"/>
+        </div>
+
+    {% elseif orderModel.status == orderStatusAgree %}
+        <div class="row pt-4 pb-2 {{ isMaxW500 }}">
+            <div class="w-100 pl-3 pb-3">
+                <textarea id="order-comment"
+                      maxlength="2000" rows="7" placeholder="Комментарий к заказу"
+                      data-val="true" data-val-required="Комментарий к заказу."
+                      class="form-control {{ controlLg }} w-100 shadow"></textarea>
+            </div>
+            <input id="btn-cancel-agree-order"
+                   class="btn btn-warning btn-brand font-weight-bold mx-auto {{ lbLg }} {{ minW_400_650 }} shadow"
+                   value="Отказаться"/>
+        </div>
+        <div class="row pt-2 pb-4 {{ isMaxW500 }}">
+            <input id="btn-execute-order"
+                   class="btn btn-success btn-brand font-weight-bold mx-auto {{ lbLg }} {{ minW_400_650 }} shadow"
+                   value="Заказ выполнен"/>
+        </div>
+
+    {% elseif orderModel.status == orderStatusDone or orderModel.status == orderStatusAssessment %}
+        <div class="">
+            <h4 class="pb-3 {{ lbLg }}">Отзывы о заказе</h4>
+            <div id="client-reviews" class="">
+                {{ block('reviewsList') }}
+            </div>
+        </div>
+
+        <div class="pt-4 {{ isMaxW500 }}">
+            <div class="py-2 {{ lbLg }}">
+                <span class="pr-2">Оцените клиента: </span>
+                <span id="review-assessment-1" number="1" class="fa fa-lg create-review fa-star star-checked"></span>
+                <span id="review-assessment-2" number="2" class="fa fa-lg create-review fa-star star-checked"></span>
+                <span id="review-assessment-3" number="3" class="fa fa-lg create-review fa-star star-checked"></span>
+                <span id="review-assessment-4" number="4" class="fa fa-lg create-review fa-star star-checked"></span>
+                <span id="review-assessment-5" number="5"
+                      class="fa fa-lg create-review fa-star btn-outline-secondary"></span>
+            </div>
+
+            <textarea id="review-text" name="profile-about"
+                      maxlength="2000" rows="7" placeholder="Текст Вашего отзыва"
+                      class="form-control {{ controlLg }} shadow">{{ about }}</textarea>
+            <span class="small {{ smallLg }}">Длина поля ограничена - не более 2000 символов</span>
+
+            <div class="row pt-4">
+                <input id="btn-create-review"
+                       class="btn btn-pink btn-brand font-weight-bold mx-auto {{ lbLg }} {{ minW_400_650 }} shadow"
+                       value="Написать отзыв"/>
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock %}
+
+{% block javascriptTwigComponents %}
+    <script type="text/javascript">
+        var orderId = '{{ orderModel.id }}';
+        var masterProfileId = '{{ masterProfileModel.id }}';
+
+        $('#btn-send-agree-client-to-order').on('click', function () {
+            $.ajax({
+                url: '/lk/sendAgreeToClient',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'order-id': orderId,
+                    'master-profile-id': masterProfileId,
+                    'order-comment': $('#order-comment').val()
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        alert(data.message);
+                        window.location = '/lk/myOrders';
+                    } else {
+                        alert('Ошибка отправки согласования клиенту.');
+                    }
+                },
+                error: function () {
+                    alert('Ошибка отправки согласования клиенту.');
+                }
+            });
+        });
+
+        $('#btn-agree-to-order').on('click', function () {
+            $.ajax({
+                url: '/lk/bindMaster',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'order-id': orderId,
+                    'master-profile-id': masterProfileId,
+                    'order-comment': $('#order-comment').val()
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        alert(data.message);
+                        window.location = '/lk/myOrders';
+                    } else {
+                        alert('Ошибка принятия в работу заказа.');
+                    }
+                },
+                error: function () {
+                    alert('Ошибка принятия в работу заказа.');
+                }
+            });
+        });
+
+        //Отказаться и выполнить ==========================================================================================
+
+        $('#btn-cancel-agree-order').on('click', function () {
+            $.ajax({
+                url: '/lk/cancelAgreeOrder',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'order-id': orderId,
+                    'order-comment': $('#order-comment').val()
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        alert(data.message);
+                        window.location = '/lk/myOrders';
+                    } else {
+                        alert('Не удалось отменить согласование заказа.');
+                    }
+                },
+                error: function () {
+                    alert('Не удалось отменить согласование заказа.');
+                }
+            });
+        });
+
+        $('#btn-execute-order').on('click', function () {
+            $.ajax({
+                url: '/lk/executeOrder',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'order-id': orderId,
+                    'order-comment': $('#order-comment').val()
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        alert(data.message);
+                        window.location = '/lk/myOrders';
+                    } else {
+                        alert('Не удалось отметить выполнение заказа.');
+                    }
+                },
+                error: function () {
+                    alert('Не удалось отметить выполнение заказа.');
+                }
+            });
+        });
+
+
+        //отзывы заказа =========================================================
+        {% if orderModel.status == orderStatusDone or orderModel.status == orderStatusAssessment %}
+        function getReviews() {
+            $('#btn-create-review').prop('disabled', true);
+            $.ajax({
+                url: '/lk/getReviews',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    'orderId': orderId,
+                },
+                success: function (data) {
+                    if (data && typeof data.tech_message !== 'undefined' && (data.error === false)) {
+                        $('#client-reviews').html('');
+                        var reviews = JSON.parse(data.tech_message);
+                        if (reviews.length > 0) {
+                            $(reviews).each(function (num, review) {
+                                $('#client-reviews').append('<div class="{{ smallLg }}">' + review.date + ', Оценка: ' + review.assessment + ', Комментарий: ' + review.reviewText + '</div>');
+                            });
+                        }
+                    } else {
+                        alert('Ошибка получения списка отзывов для заказа.');
+                    }
+                },
+                error: function () {
+                    alert('Ошибка получения списка отзывов для заказа.');
+                }
+            });
+        }
+
+        $('.create-review.fa-star').each(function (num, el) {
+            $(el).click(function () {
+                var thisNum = $(el).attr('number');
+                $('.create-review.fa-star').each(function (num, el) {
+                    if (num < thisNum) {
+                        $(el).removeClass('btn-outline-secondary');
+                        $(el).addClass('star-checked');
+                    } else {
+                        $(el).removeClass('star-checked');
+                        $(el).addClass('btn-outline-secondary');
+                    }
+                });
+            });
+        });
+
+        function setAssessment() {
+            var assessment = 0;
+            $('.create-review.fa-star').each(function (num, el) {
+                if ($(el).hasClass('star-checked') === true) {
+                    assessment++;
+                }
+            });
+            return assessment;
+        }
+
+        $('#review-text').keyup(function () {
+            if ($('#review-text').val().length === 0) {
+                $('#btn-create-review').prop('disabled', true);
+            } else {
+                $('#btn-create-review').prop('disabled', false);
+            }
+        });
+
+        $('#btn-create-review').prop('disabled', true).on('click', function () {
+            $.ajax({
+                url: '/lk/createReview',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'order_id': orderId,
+                    'assessment': setAssessment(),
+                    'review_text': $('#review-text').val()
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        $('#review-text').val('');
+
+                        //обновить список отзывов
+                        getReviews();
+                    } else {
+                        alert('Ошибка сохранения отзыва для заказа.');
+                    }
+                }
+                ,
+                error: function () {
+                    alert('Ошибка сохранения отзыва для заказа.');
+                }
+            })
+            ;
+        });
+        {% endif %}
+    </script>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

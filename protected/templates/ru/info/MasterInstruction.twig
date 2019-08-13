@@ -1,0 +1,87 @@
+{% extends "Base.twig" %}
+
+{% block title %}Мастерам{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="d-flex">
+            <div class="card card-body shadow-sm">
+                <h1 class="pb-4 border-bottom text-center">Получайте работу и подработку рядом с домом.</h1>
+                <div class="topic-text ue-content">
+                    <p class="pb-sm-2">
+                        <i>{{ siteNameRus }} – самый крупный поставщик работы для мастеров красоты</i>
+                    </p>
+
+                    <p class="pb-sm-2">
+                        <i>Как мне откликаться на предложения?</i>
+                    </p>
+                    <p class="pb-sm-2">
+                        1) Зарегистрируйся
+                        <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 2) Подключи уведомления
+                        <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 3) Выбирай предложения интересные
+                        для тебя
+                    </p>
+                    <div class="mx-auto text-center pb-sm-2">
+                        <input id="btn-orders"
+                               class="btn btn-pink btn-brand font-weight-bold mx-auto shadow"
+                               value="Получить заказы"/>
+                    </div>
+
+                    <p class="text-center pb-sm-2">
+                        <i>Заказы клиентов</i>
+                    </p>
+                    {% for order in rand5Orders %}
+                        <div class="row ml-0 {{ mobileW_100_75 }} mr-2 master-short-data bg-white text-center mx-auto shadow">
+                            <div class="col px-2 vertical-align">
+                                <div class="text-center mx-auto">
+                                    <span class="">Когда нужно: {{ order.receipt_date }}</span><br>
+                                    <span class="">Задача: {{ order.service.name }}</span>
+                                </div>
+                            </div>
+                            <div class="col-3 my-3 btn-info master-work-time px-1 mr-2 text-center">
+                                <span>Бюджет:<br>{{ order.plan_price }} руб.</span><br>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <p class="text-center pt-sm-4">
+                        <i>Вакансии для мастеров красоты</i>
+                    </p>
+                    {% for vacancy in vacancies %}
+                        <div class="row ml-0 {{ mobileW_100_75 }} my-2 mr-2 master-short-data bg-white text-center mx-auto shadow"
+                             master-id="{{ vacancy.id }}">
+                            <div class="col px-2 vertical-align">
+                                <div class="text-center mx-auto">
+                                    <span class="">Профессия: {{ vacancy.direction.name }}</span><br>
+                                    <span class="">Опыт работы: {{ vacancy.work_experience }} лет</span>
+                                    <br><span class="">Описание: {{ vacancy.description }}</span>
+                                </div>
+                            </div>
+                            <div class="px-3 my-3 btn-pink mr-2 master-work-time text-center vertical-align">
+                                <b>
+                                    Оклад: {{ vacancy.salary|default('не указан') }}
+                                    {% if vacancy.salary > 0 %} руб. {% endif %}
+                                </b>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+{% endblock %}
+
+{% block javascript %}
+$('#btn-orders').on('click', function (event) {
+    window.location = '/lk/myOrders';
+});
+
+{% endblock %}

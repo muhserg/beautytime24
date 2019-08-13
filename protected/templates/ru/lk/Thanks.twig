@@ -1,0 +1,47 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - спасибо за заказ!{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100 pl-4">
+        Спасибо, скоро мастера начнут оставлять свои предложения.<br>
+        Пока предлагаем Вам найти мастера из списка.
+    </div>
+
+    <div class="row pt-4 {{ isMaxW500 }}">
+        <img src="/img/thankyou.png" class="mx-auto" width="300" height="300">
+    </div>
+
+    <div class="row pt-4 {{ isMaxW500 }}">
+        <input id="button-find-master-thanks"
+               class="btn btn-pink btn-brand font-weight-bold mx-auto {{ lbLg }} {{ minW_400_650 }} shadow"
+               value="Найти мастера из списка"/>
+    </div>
+    <div class="row pt-4 {{ isMaxW500 }}">
+        <input id="button-my-orders-thanks"
+               class="btn btn-pink btn-brand font-weight-bold mx-auto {{ lbLg }} {{ minW_400_650 }} shadow"
+               value="Мои заказы"/>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+var routingThanks = {
+    'button-my-orders-thanks': '/lk/myOrders',
+    'button-find-master-thanks': '/lk/findMasterPage'
+};
+
+for (var btnId in routingThanks) {
+    $('#' + btnId).on('click', function (event) {
+        window.location = routingThanks[this.id];
+    });
+}
+
+{{ parent() }}
+{% endblock %}

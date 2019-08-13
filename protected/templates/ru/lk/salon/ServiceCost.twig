@@ -1,0 +1,176 @@
+{% extends "lk/BaseControls.twig" %}
+
+{% block title %}{{ parent() }} - длительность и стоимость услуг
+    {% if byAdmin == true %}
+        пользователя '{{ uLogin }}'
+    {% endif %}
+{% endblock %}
+{% block head %}
+    {{ parent() }}
+    {{ block('javascriptTimePicker') }}
+    <script type="text/javascript" src="/js/Math.uuid.js"></script>
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    {% if byAdmin == true %}
+        {{ block('profileAdminMenu') }}
+    {% else %}
+        <nav class="navbar navbar-expand-sm navbar-light bg-bt-menu">
+            <ul class="navbar-nav">
+                <li class="nav-item pr-2">
+                    <button class="btn btn-info {{ smallLg }}"
+                            id="menu-button-view-profile" type="button">
+                        Просмотр
+                    </button>
+                </li>
+                <li class="nav-item pr-2">
+                    <button class="btn btn-info {{ smallLg }}"
+                            id="menu-button-schedule" type="button">
+                        Время работы, тел.
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        <br>
+    {% endif %}
+
+    <form id="service-cost-form"
+          action="{% if byAdmin == true %}/lk/saveServiceCostByAdmin?userId={{ uId }}&userType={{ uType }}{% else %}/lk/saveServiceCost{% endif %}"
+          class="form-horizontal" method="post" role="form">
+        <div class="justify-content-center w-100 pl-0">
+            {% if selServicesExists == false %}
+                Не выбрано ни одной услуги.
+                <br>Услуги можно выбрать в профиле.
+            {% else %}
+                <div class="row mx-auto my-0 pb-4">
+                    <div class="pl-2 {{ lbLg }} col text-center">
+                        Услуга
+                    </div>
+                    <!--<div class="pl-2 {{ lbLg }} col text-center">
+                        Длительность<br>(в минутах)
+                    </div>-->
+                    <div class="pl-2 {{ lbLg }} col text-center">
+                        Цена<br>(руб.)
+                    </div>
+                </div>
+
+                {% for profileDirection in profileDirections %}
+                    {% if profileDirection.selected == 'selected' %}
+                        <div class="{{ lbLg }} w-100 text-center pb-3">
+                            <b>{{ profileDirection.name }}</b>
+                            <hr class="border-2 border-secondary">
+                        </div>
+
+                        {% for profileService in profileServices %}
+                            {% if profileService.selected == 'selected' and profileService.direction_id == profileDirection.id %}
+                                <div class="row mx-auto my-0 pb-4">
+                                    <div class="pl-2 col text-center">
+                                        <span class="{{ smallLg }}">{{ profileService.name }}</span>
+                                        <br>
+                                        <input id="btn-add-additional-service-{{ profileService.id }}"
+                                               service-id="{{ profileService.id }}"
+                                               class="mt-1 btn btn-pink {{ smallLg }} btn-additional-service curr-w-140 shadow"
+                                               value="Добавить"/>
+                                    </div>
+                                    <div class="pl-2 col vertical-align">
+                                        <!--<input id="service-duration-{{ profileService.id }}"
+                                               name="service-duration-{{ profileService.id }}"
+                                               type="number" step="10" min="0" max="300"
+                                               value="{{ profileService.duration }}"
+                                               class="form-control {{ controlLg }} input-small shadow">-->
+                                    </div>
+                                    <div class="pl-2 col vertical-align">
+                                        <!--<input id="service-cost-{{ profileService.id }}"
+                                               name="service-cost-{{ profileService.id }}"
+                                               type="number" step="0.01" min="0"
+                                               value="{{ profileService.cost }}"
+                                               class="form-control {{ controlLg }} input-small shadow">-->
+                                    </div>
+                                </div>
+                                <div id="additional-services-{{ profileService.id }}"
+                                     add-serv-length="{{ profileService.additional_services|length }}"
+                                     class="justify-content-center w-100 pl-0">
+                                    {% for additionalService in profileService.additional_services %}
+                                        <div class="row mx-auto my-0 pb-4">
+                                            <div class="pl-2 col">
+                                                <input id="service-name-{{ additionalService.id }}"
+                                                       name="additional-service-name-{{ profileService.id }}-{{ additionalService.id }}"
+                                                       type="text" value="{{ additionalService.name }}"
+                                                       class="form-control {{ controlLg }} input-small shadow">
+                                            </div>
+                                            <!--<div class="pl-2 col">
+                                                <input id="service-duration-{{ additionalService.id }}"
+                                                       name="additional-service-duration-{{ profileService.id }}-{{ additionalService.id }}"
+                                                       type="number" step="10" min="0" max="300"
+                                                       value="{{ additionalService.duration }}"
+                                                       class="form-control {{ controlLg }} input-small shadow">
+                                            </div>-->
+                                            <div class="pl-2 col">
+                                                <input id="service-cost-{{ additionalService.id }}"
+                                                       name="additional-service-cost-{{ profileService.id }}-{{ additionalService.id }}"
+                                                       type="number" step="0.01" min="0"
+                                                       value="{{ additionalService.cost }}"
+                                                       class="form-control {{ controlLg }} input-small shadow">
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+
+                <div class="row mx-auto my-0 py-2">
+                    <div class="pl-2">
+                    </div>
+                    <div class="w-100 p-3">
+                        <input id="profile-button-save" type="submit"
+                               class="btn btn-pink {{ lbLg }} min-w-400 font-weight-bold bt-button-save shadow"
+                               value="Сохранить"/>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </form>
+{% endblock %}
+
+{% block javascriptTwigComponents %}
+    <script type="text/javascript">
+        $('.btn-additional-service').on('click', function (event) {
+            var parentServiceId = $(this).attr('service-id');
+            var addServGuid = Math.uuid();
+
+            var additionalServiceDivTemplate =
+                '<div class="row mx-auto my-0 pb-4">' +
+                '   <div class="pl-2 col text-right">' +
+                '       <input id="additional-service-name-' + parentServiceId + '-' + addServGuid + '"' +
+                '           name="additional-service-name-' + parentServiceId + '-' + addServGuid + '"' +
+                '           type="text" value=""' +
+                '           class="form-control {{ controlLg }} input-small shadow">' +
+                '   </div>' +
+                /*'   <div class="pl-2 col">' +
+                '       <input id="service-duration-' + parentServiceId + '-' + addServGuid + '"' +
+                '           name="additional-service-duration-' + parentServiceId + '-' + addServGuid + '"' +
+                '           type="number" step="10" min="0" max="300"' +
+                '           class="form-control {{ controlLg }} input-small shadow">' +
+                '   </div>' +*/
+                '   <div class="pl-2 col">' +
+                '       <input id="service-cost-' + parentServiceId + '-' + addServGuid + '"' +
+                '           name="additional-service-cost-' + parentServiceId + '-' + addServGuid + '"' +
+                '           type="number" step="0.01" min="0"' +
+                '           class="form-control {{ controlLg }} input-small shadow">' +
+                '   </div>' +
+                '</div>';
+
+            $('#additional-services-' + parentServiceId).append(additionalServiceDivTemplate);
+        });
+    </script>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

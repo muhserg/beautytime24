@@ -1,0 +1,119 @@
+{% extends "Base.twig" %}
+
+{% block title %}Обратная связь{% endblock %}
+{% block head %}
+    {{ parent() }}
+    <script src="/js/jquery.inputmask.bundle.min.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/jquery.validate.unobtrusive.min.js"></script>
+    <script src="/js/additional-methods.min.js"></script>
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="{{ showRow }}">
+        <div class="{{ showColSm6 }}">
+            <section id="loginForm">
+                <div class="card card-body my-2 shadow">
+                    <h4 class="pb-4 pt-2  {{ lbLg }} border-bottom text-center">Обратная связь</h4>
+
+                    <form id="feedback-form" action="/main/sendFeedBack" class="form-horizontal" method="post"
+                          role="form">
+                        <div class="validation-summary-valid {{ smallLg }} text-danger" data-valmsg-summary="true">
+                            <ul>
+                                <li style="display:none"></li>
+                            </ul>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+                                <div class="input-group">
+                                    <input id="sender-name" name="sender-name"
+                                           class="form-control {{ controlLg }} shadow" data-val="true"
+                                           data-val-required="Требуется заполнить поле 'Имя'"
+                                           placeholder="&#xf2bd;  Ваше имя"
+                                           type="text" value="{{ senderName }}">
+                                </div>
+                                <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="sender-name"
+                                      data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+                                <div class="input-group">
+                                    <input id="phone-number" name="phone-number"
+                                           class="form-control {{ controlLg }} shadow phone-group" data-val="true"
+                                           placeholder="&#xf095;   Ваш телефон" type="tel" value="{{ phone }}">
+                                </div>
+                                <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="phone-number"
+                                      data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+                                <div class="input-group">
+                                    <input id="email" name="email"
+                                           class="form-control {{ controlLg }} shadow phone-group" data-val="true"
+                                           data-val-email="Поле 'E-mail' заполнено некорректно"
+                                           placeholder="&#xf2c2;  Ваш e-mail" type="text" value="{{ email }}">
+                                </div>
+                                <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="email"
+                                      data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+                                <div class="input-group">
+                                    <textarea id="comment" name="comment" rows="5"
+                                              class="form-control {{ controlLg }} shadow" data-val="true"
+                                              data-val-required="Требуется заполнить поле 'Комментарий'"
+                                              data-msg-maxlength="Длина комментария ограничена - не более 2000 символов"
+                                              data-rule-maxlength="2000"
+                                              placeholder="Ваш комментарий">{{ comment }}</textarea>
+                                </div>
+                                <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="comment"
+                                      data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12">
+                                <button type="submit" class="btn btn-pink {{ lbLg }} btn-brand font-weight-bold shadow"
+                                        style="width: 100%;">Отправить
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </section>
+        </div>
+
+        <div class="{{ showColSm6 }} my-3">
+            <h5 class="text-center mt-4 {{ lbLg }} px-5">
+                Возможно Вы сможете найти свой ответ среди частозадаваемых вопросов
+            </h5>
+            <div class="text-center mb-5">
+                <a class="btn btn-light btn-brand {{ lbLg }} shadow font-weight-bold" href="/info/faq">
+                    Просмотреть
+                </a>
+            </div>
+        </div>
+    </div>
+    <br>
+{% endblock %}
+
+{% block javascript %}
+jQuery.extend(jQuery.validator.messages, {
+    require_from_group: "Одно из полей 'Телефон' или 'E-mail' должно быть заполнено"
+});
+jQuery.validator.addClassRules("phone-group", {
+    require_from_group: [1, ".phone-group"]
+});
+
+$(document).ready(function () {
+    $("#comment").focus();
+    $("#phone-number").inputmask("+7 (999) 999-99-99", {clearIncomplete: true, showMaskOnHover: true});
+});
+{% endblock %}

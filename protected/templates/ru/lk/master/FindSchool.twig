@@ -1,0 +1,27 @@
+{% extends "lk/BaseControls.twig" %}
+
+{% block title %}{{ parent() }} - поиск школы красоты{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100 pl-0">
+        {{ block('contentFindSchool') }}
+    </div>
+{% endblock %}
+
+
+{% block javascriptTwigComponents %}
+    {{ block('javascriptFieldValidation') }}
+    {{ block('javascriptAddressProfile') }}
+    {{ block('javascriptFindSchool') }}
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

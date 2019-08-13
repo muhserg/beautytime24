@@ -1,0 +1,41 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - мои вакансии{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100 pl-3">
+        {% if vacancies|length == 0 %}
+            Вакансий на данный момент у Вас нет.
+        {% else %}
+            {% for vacancy in vacancies %}
+                <div class="div-client-orders row ml-0 w-100 max-w-500 my-2 mr-2 master-short-data shadow"
+                     master-id="{{ vacancy.id }}">
+                    <div class="col px-2 vertical-align">
+                        <div class="text-center mx-auto">
+                            <span class="">Профессия: {{ vacancy.direction.name }}</span><br>
+                            <span class="">Опыт работы: {{ vacancy.work_experience }} лет</span>
+                            <br><span class="">Описание: {{ vacancy.description }}</span>
+                        </div>
+                    </div>
+                    <div class="px-3 mr-2 my-3 btn-pink master-work-time text-center vertical-align">
+                        <b>
+                            Оклад: {{ vacancy.salary|default('не указан') }}
+                            {% if vacancy.salary > 0 %} руб. {% endif %}
+                        </b>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

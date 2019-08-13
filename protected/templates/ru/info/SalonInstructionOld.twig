@@ -1,0 +1,102 @@
+{% extends "Base.twig" %}
+
+{% block title %}Салонам{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="d-flex">
+            <div class="card card-body my-1 shadow-sm">
+                <h1 class="pb-4 border-bottom text-center">
+                    {{ siteNameRus }} – найти хорошего мастера для салона легко и просто.
+                </h1>
+                <div class="topic-text ue-content">
+                    <div class="ml-0 row justify-content-center container-fluid">
+                        <div class="col-md-3 text-center">
+                            <img src="/img/checked_masters.jpg" class="img-fluid">
+                            <br><br>Проверенные мастера
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <img src="/img/reviews.jpg" class="img-fluid">
+                            <br><br>Достоверные отзывы
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <img src="/img/beauty_helper.jpg" class="img-fluid">
+                            <br><br>Надежный помощник
+                            <nobr>для салонов красоты</nobr>
+                        </div>
+                    </div>
+                    <br><br>
+
+                    <p class="pb-sm-2">
+                        <i>Как найти мастера под запись в салон красоты, если штатый сотрудник заболел?</i>
+                    </p>
+
+                    <p class="pb-sm-2">
+                        1) Создайте заявку
+                        <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 2) Получите предложения от мастера
+                        <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 3) Сравните портфолио мастера
+                        <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 4) Обсуждайте условияв чате или по телефону
+                        <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 5) Выберите мастера
+                        <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 6) Оставьте отзыв
+                    </p>
+                    <div class="mx-auto text-center pb-sm-2">
+                        <input id="btn-create-order"
+                               class="btn btn-pink btn-brand font-weight-bold mx-auto shadow"
+                               value="Создать заявку"/>
+                    </div>
+
+                    <p class="pt-sm-2 pb-sm-2">
+                        <i>Размещение вакансий мастера на постоянной основе.</i>
+                    </p>
+                    <p class="pb-sm-2">
+                        1) Зайдите во вкладку "Вакансии"
+                        <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 2) Нажмите кнопку "Разместить вакансию"
+                        <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 3) Заполните анкету
+                        <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 4) Получайте отклики от мастеров
+                    </p>
+                    <div class="mx-auto text-center pb-sm-2">
+                        <input id="btn-create-vacancy"
+                               class="btn btn-pink btn-brand font-weight-bold mx-auto shadow"
+                               value="Создать вакансию"/>
+                    </div>
+
+                    <p class="pt-sm-2 pb-sm-2">
+                        <i>Информация об услугах салона.</i>
+                    </p>
+                    <p class="pb-sm-2">
+                        1) Добавьте фото и описание услуг в Ваш профиль
+                        <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 2) Разместите актуальные акции на услуги салона
+                        <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 3) Укажите контакты и время работы
+                    </p>
+                    <div class="mx-auto text-center pb-sm-2">
+                        <input id="btn-profile"
+                               class="btn btn-pink btn-brand font-weight-bold mx-auto shadow"
+                               value="Войти в профиль"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+$('#btn-create-order').on('click', function (event) {
+    window.location = '/lk/createOrderPage';
+});
+
+$('#btn-create-vacancy').on('click', function (event) {
+    window.location = '/lk/createVacancyPage';
+});
+
+$('#btn-profile').on('click', function (event) {
+    window.location = '/lk/profile';
+});
+
+{% endblock %}

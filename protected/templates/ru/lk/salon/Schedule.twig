@@ -1,0 +1,102 @@
+{% extends "lk/BaseControls.twig" %}
+
+{% block title %}{{ parent() }} - время работы и телефон{% endblock %}
+{% block head %}
+    {{ parent() }}
+    {{ block('javascriptTimePicker') }}
+    {{ block('javascriptFieldValidation') }}
+    <script type="text/javascript" src="/js/jquery.multi-select.min.js"></script>
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <nav class="navbar navbar-expand-sm navbar-light bg-bt-menu">
+        <ul class="navbar-nav">
+            <li class="nav-item pr-2">
+                <button class="btn btn-info {{ smallLg }}"
+                        id="menu-button-view-profile" type="button">
+                    Просмотр
+                </button>
+            </li>
+            <li class="nav-item pr-2">
+                <button class="btn btn-info {{ smallLg }}"
+                        id="menu-button-service-cost" type="button">
+                    Цена услуг
+                </button>
+            </li>
+        </ul>
+    </nav>
+    <br>
+
+    {% if errorText == 'Заполните профиль.' %}
+        <div class="{{ lbLg }}">
+            Сначала нужно заполнить <a href="/lk/profile">профиль</a>.
+        </div>
+    {% else %}
+
+        <form id="schedule-form" action="/lk/saveScheduleAndPhone" class="form-horizontal" method="post" role="form">
+            <input type="hidden" id="schedule-id" name="schedule-id" value="{{ scheduleId }}">
+            <div class="justify-content-center w-100 pl-0 {{ isMaxW500 }}">
+                <div class="row my-3">
+                    <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+                        Дни:
+                    </div>
+                    <div class="pl-4 col-xl-10">
+                        <select id="schedule-weekday" name="schedule-weekday[]" multiple='multiple'
+                                class="form-control {{ controlLg }} shadow">
+                            {% for weekday in weekdays %}
+                                <option value="{{ weekday.id }}" {{ weekday.selected }}>{{ weekday.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                {{ block('timePicker') }}
+                {{ block('phoneProfile') }}
+
+                <div class="mx-auto w-50 min-w-200">
+                    <input id="profile-button-save" type="submit"
+                           class="btn btn-pink font-weight-bold bt-button-save shadow"
+                           value="Сохранить"/>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}
+
+{% block javascriptTwigComponents %}
+{% endblock %}
+
+{% block javascript %}
+$('#schedule-weekday').multiSelect({
+    'containerHTML': '<div id="multi-select-container-schedule-weekday" class="multi-select-container {{ lbLg }}">',
+    noneText: 'Выберите рабочие дни недели ',
+    presets: [
+                {
+                    name: 'Без выходных',
+                    options: ['1', '2', '3', '4', '5', '6', '7']
+                },
+                {
+                    name: 'Будни (5/2)',
+                    options: ['1', '2', '3', '4', '5']
+                },
+                {
+                    name: 'Будни и суббота (6/1)',
+                    options: ['1', '2', '3', '4', '5', '6']
+                },
+                {
+                    name: 'В выходные',
+                    options: ['6', '7']
+                },
+                {
+                    name: 'Отменить выбор',
+                    options: []
+                }
+    ]
+});
+
+{{ parent() }}
+{% endblock %}

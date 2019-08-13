@@ -1,0 +1,66 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }}{% endblock %}
+{% block head %}
+    {{ parent() }}
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/jquery.validate.unobtrusive.min.js"></script>
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100 pl-3">
+        <div id="bt-chat" style="overflow: auto;">
+            <p>Чат открывается...</p>
+        </div>
+        <div class="navbar-fixed-bottom">
+            <textarea id="chat-input" rows="5"
+                      class="form-control shadow" data-val="true"
+                      maxlength="300" onkeypress="wsSend()"
+                      placeholder="Введите сообщение"></textarea>
+            <span class="small">Длина сообщения ограничена - не более 300 символов</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+function wsStart() {
+    ws = new WebSocket('ws://{{ webSocketHost }}');
+    ws.onopen = function () {
+        $("#bt-chat").empty();
+        $("#bt-chat").append("<p>Чат открыт.</p>");
+    };
+    ws.onclose = function () {
+        $("#bt-chat").empty();
+        $("#bt-chat").append("<p>Чат закрыт. Переоткрытие чата...</p>");
+        setTimeout(wsStart, 1000);
+    };
+    ws.onmessage = function (evt) {
+        $('#chat-input').val('');
+        $("#bt-chat").append("<p>" + evt.data + "</p>");
+        $('#bt-chat').scrollTop($('#bt-chat')[0].scrollHeight);
+    };
+}
+
+function wsSend() {
+    var key = window.event.keyCode;
+    if (key === 13) {
+        ws.send(JSON.stringify({
+            'user-id': '{{ userId }}',
+            'login': '{{ userLogin }}',
+            'message': $.trim($('#chat-input').val())
+        }));
+        $('#chat-input').val('');
+        return false;
+    } else {
+        return true;
+    }
+}
+
+wsStart();
+$('#chat-input').focus();
+{% endblock %}

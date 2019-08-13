@@ -1,0 +1,80 @@
+{% extends "lk/BaseControls.twig" %}
+
+{% block title %}{{ parent() }} - время работы{% endblock %}
+{% block head %}
+    {{ parent() }}
+    {{ block('javascriptTimePicker') }}
+    {{ block('javascriptFieldValidation') }}
+    <script type="text/javascript" src="/js/jquery.multi-select.min.js"></script>
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <nav class="navbar navbar-expand-sm navbar-light bg-bt-menu">
+    <ul class="navbar-nav">
+    <li class="nav-item pr-2">
+        <button class="btn btn-info {{ smallLg }}"
+                id="menu-button-edit-profile" type="button">
+            О себе
+        </button>
+    </li>
+    <li class="nav-item pr-2">
+        <button class="btn btn-info {{ smallLg }}"
+                id="menu-button-notification" type="button">
+            Подписка
+        </button>
+    </li>
+    <li class="nav-item pr-2">
+        <button class="btn btn-info {{ smallLg }}"
+                id="menu-button-portfolio" type="button">
+            Портфолио
+        </button>
+    </li>
+    {% if isMobile == true %}
+        </ul>
+        </nav>
+        <nav class="navbar navbar-expand-sm navbar-light bg-bt-menu pt-0">
+        <ul class="navbar-nav">
+    {% endif %}
+    <li class="nav-item pr-2">
+        <button class="btn btn-info {{ smallLg }}"
+                id="menu-button-service-cost" type="button">
+            Цена услуг
+        </button>
+    </li>
+    </ul>
+    </nav>
+    <br>
+
+    {% if errorText == 'Заполните профиль.' %}
+        <div class="{{ lbLg }}">
+            Сначала нужно заполнить <a href="/lk/profile">профиль</a>.
+        </div>
+    {% else %}
+        <form id="schedule-form" action="/lk/saveScheduleAndPhone" class="form-horizontal" method="post" role="form">
+            <input type="hidden" id="schedule-id" name="schedule-id" value="{{ scheduleId }}">
+            <div class="justify-content-center w-100 pl-0 {{ isMaxW500 }}">
+
+                {{ block('timePicker') }}
+                {{ block('phoneProfile') }}
+
+                <div class="mx-auto w-50 min-w-200">
+                    <input id="profile-button-save" type="submit"
+                           class="btn btn-pink font-weight-bold bt-button-save shadow"
+                           value="Сохранить"/>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}
+
+{% block javascriptTwigComponents %}
+    {{ block('javascriptFieldValidation') }}
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

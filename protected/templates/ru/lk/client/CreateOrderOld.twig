@@ -1,0 +1,123 @@
+{% extends "lk/BaseControls.twig" %}
+
+{% block title %}{{ parent() }} - сделать заказ{% endblock %}
+{% block head %}
+    {{ parent() }}
+    <link type="text/css" href="/css/gijgo.min.css" rel="stylesheet"/>
+    <script type="text/javascript" src="/js/gijgo.min.js"></script>
+    <script type="text/javascript" src="/js/messages.ru-ru.js"></script>
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100 pl-0">
+        <div class="row">
+            <div class="col-lg-4 mr-3">
+                <h1>Выбрать услугу</h1>
+                <div class="list-group {{ smallLg }} list-group-root">
+                    {% for profileDirection in profileDirectionsMenu %}
+                        <a href="#direction-{{ profileDirection.id }}" class="list-group-item" data-toggle="collapse">
+                            <i class="fa fa-angle-right pr-1"></i>{{ profileDirection.name }}
+                        </a>
+                        <div class="list-group collapse" id="direction-{{ profileDirection.id }}">
+                            {% for profileService in profileServices %}
+                                {% if profileService.direction_id == profileDirection.id %}
+                                    <span id="service-{{ profileService.id }}" service-id="{{ profileService.id }}"
+                                          class="list-group-subitem">{{ profileService.name }}</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="pl-2 col-lg-6">
+                <div class="row pb-4">
+                    <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+                        Когда нужно:
+                    </div>
+                    <div class="col px-2">
+                        <input id="orderDate" placeholder="&#xf017;  Введите дату посещения"
+                               type='text' class="form-control {{ controlLg }}" value="{{ 'now'|date('d.m.Y') }}"/>
+                    </div>
+                </div>
+                {{ block('contentFindMaster') }}
+
+                <div class="row pt-4">
+                    <input id="btn-create-order"
+                           class="btn btn-pink btn-brand {{ smallLg }} font-weight-bold mx-auto shadow"
+                           value="Сделать заказ"/>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block javascriptTwigComponents %}
+    {{ block('javascriptFindMaster') }}
+{% endblock %}
+
+{% block javascript %}
+
+$('#orderDate').datepicker({
+    format: 'dd.mm.yyyy',
+    locale: 'ru-ru',
+    uiLibrary: 'bootstrap4',
+    weekStartDay: 1,
+    icons: {
+        rightIcon: '<i class="gj-icon {{ lbLg_pt2 }}">event</i>'
+    }
+});
+
+var selectedServiceForOrder = null;
+$('#btn-create-order').prop('disabled', true).on('click', function () {
+    $.ajax({
+        url: '/lk/createOrder',
+        dataType: "json",
+        type: "POST",
+        data: {
+            'order-date': $('#orderDate').val(),
+            'service-id': selectedServiceForOrder,
+            'master-profile-id': $('.div-find-masters.btn-success').attr('master-id')
+        },
+        success: function (data) {
+            if (data && (data.error === false)) {
+                selectedServiceForOrder = null;
+                $('.list-group-subitem').css("font-weight", "normal");
+                $('#btn-create-order').prop('disabled', true);
+
+                alert('Заказ успешно создан.');
+                window.location = '/lk/order?id=' + data.tech_message;
+            } else {
+                alert('Ошибка создания заказа.');
+            }
+        },
+        error: function () {
+            alert('Ошибка создания заказа.');
+        }
+    });
+});
+
+$('.list-group-item').on('click', function () {
+    $('.fa', this)
+        .toggleClass('fa-angle-right')
+        .toggleClass('fa-angle-down');
+});
+
+$('.list-group-subitem').on('click', function () {
+    $('.list-group-subitem').css("font-weight", "normal");
+    $(this).css("font-weight", "bold");
+
+    $('#btn-create-order').prop('disabled', false);
+    $('#btn-find-master').prop('disabled', false);
+    selectedServiceForOrder = $(this).attr('service-id');
+});
+
+var searchCharCount = {{ searchCharCount }};
+{{ parent() }}
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "lk/BaseControls.twig" %}
+
+{% block title %}{{ parent() }} - профиль{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    {{ block('editProfileAdmin') }}
+    <nav class="navbar navbar-expand-sm bg-bt-menu">
+        <ul class="navbar-nav">
+            <li class="nav-item pr-2">
+                <button class="btn btn-info {{ smallLg }}"
+                        id="menu-button-edit-profile" type="button">
+                    Редактировать профиль
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="row my-3 pl-3">
+        <div class="{{ colCol_4 }} pl-0 ">
+            {% if avatarUrl != null %}
+                <img src="{{ avatarUrl }}" class="w-100 img-fluid master-short-data">
+            {% else %}
+                Нет фото.
+            {% endif %}
+        </div>
+        <div class="col {{ smallLg }}">
+            <b>{{ lastName }} {{ firstName }} {{ middleName }}</b>
+            <br><br>
+            <span><i class="fa fa-map-marker color-blue fa-lg"></i>
+                 м. {{ nearSubway }}
+            </span>
+            <br><br>
+            О себе: {{ about }}
+        </div>
+    </div>
+
+    <div class="my-3 {{ smallLg }}">
+        {% if address != null %}
+            <input id="profile-address-coord" name="profile-address-coord" type="hidden" value="{{ addressCoord }}">
+            <span class="{{ smallLg }}">Адрес: <b>{{ address }}</b></span>
+            <br><br>
+            <div id="map" class="yandex-map"></div>
+        {% else %}
+            <span class="{{ smallLg }}">Укажите <a href="/lk/profile#address">адрес</a>.</span>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block javascriptTwigComponents %}
+    {{ block('javascriptAddressProfile') }}
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

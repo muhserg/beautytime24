@@ -1,0 +1,21 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }}{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100 pl-3">
+        {{ block('bankPay') }}
+    </div>
+{% endblock %}
+
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

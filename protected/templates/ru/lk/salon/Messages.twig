@@ -1,0 +1,28 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - сообщения{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100">
+        {% if users|length == 0 %}
+            <div class="">
+                <span class="{{ smallLg }}">У Вас пока нет сообщений. Напишите <a href="/lk/findMasterPage">мастеру</a>.</span>
+            </div>
+        {% else %}
+            {% for user in users %}
+                {{ block('userMessagePanel') }}
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - мои вакансии{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-bt-menu">
+        <ul class="navbar-nav">
+            <li class="nav-item pr-2">
+                <button class="btn btn-info {{ smallLg }}"
+                        id="menu-button-create-vacancy" type="button">
+                    Создать вакансию
+                </button>
+            </li>
+        </ul>
+    </nav>
+    <br>
+
+    <div class="justify-content-center w-100 pl-3">
+        {% if vacancies|length == 0 %}
+            <span class="{{ smallLg }}">Вакансий на данный момент у Вас нет.</span>
+        {% else %}
+            {% for vacancy in vacancies %}
+                <div class="div-client-orders row ml-0 {{ smallLg }} w-100 {{ isMaxW500 }} my-2 mr-2 master-short-data shadow"
+                     master-id="{{ vacancy.id }}">
+                    <div class="col px-2 vertical-align">
+                        <div class="text-center {{ smallLg }} mx-auto">
+                            <span class="">Профессия: <b>{{ vacancy.direction.name }}</b></span><br>
+                            <span class="">Опыт работы: <b>{{ vacancy.work_experience }}
+                                    {% if vacancy.work_experience == 1 %}
+                                        год
+                                    {% elseif vacancy.work_experience > 1 and vacancy.work_experience <= 4 %}
+                                        года
+                                    {% else %}
+                                        лет
+                                    {% endif %}
+                                </b></span>
+                            <br><span class="">Описание: {{ vacancy.description }}</span>
+                        </div>
+                    </div>
+                    <div class="px-3 mr-2 my-3 {{ smallLg }} btn-pink master-work-time text-center">
+                        <span><b>
+                            Оклад: {{ vacancy.salary|default('не указан') }}
+                            {% if vacancy.salary > 0 %} руб. {% endif %}
+                        </b></span>
+                        <br>
+                        <span><b>{{ vacancy.phone }}</b></span>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+var routingVacancy = {
+    'menu-button-create-vacancy': '/lk/createVacancyPage',
+};
+
+for (var btnId in routingVacancy) {
+    $('#' + btnId).on('click', function (event) {
+        window.location = routingVacancy[this.id];
+    });
+}
+{{ parent() }}
+{% endblock %}

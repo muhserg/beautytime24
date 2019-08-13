@@ -1,0 +1,39 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - поиск салонов{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-50 pl-3">
+        <i>Салоны в радиусе {{ salonRadius }} км от Вас.</i>
+
+        {% if salons|length == 0 %}
+            <p>
+                Салоны оказывающие данную услугу и находящиеся ближе {{ salonRadius }} км не найдены.
+            </p>
+        {% else %}
+            {% for salon in salons %}
+                {{ block('salonPanel') }}
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+$('#btn-chat').on('click', function (event) {
+    window.location = '/lk/chat';
+});
+
+$('#btn-profile').on('click', function (event) {
+    $(this).toggleClass('additional');
+    $('#salon-profile-additional-' + $(this).attr('salon-id')).toggleClass('collapse');
+});
+
+{{ parent() }}
+{% endblock %}

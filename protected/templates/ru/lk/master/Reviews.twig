@@ -1,0 +1,20 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - отзывы о моих заказах{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-50">
+        {{ block('reviewsList') }}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - успешное пополнение
+    {% if isTest == 1 %}
+        (тестовый режим)
+    {% endif %}
+{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center {{ lbLg }} w-100 pl-3">
+        Вы успешно пополнили свой баланс!
+        <br>Ваш баланс: <b>{{ balance }}</b> руб.
+    </div>
+{% endblock %}
+
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

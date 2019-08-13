@@ -1,0 +1,524 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - заказ № {{ orderModel.id }}{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center {{ lbLg }} w-100 {{ isMaxW500 }}">
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Статус:
+            </div>
+            <div class="pl-4 col">
+                <b>{{ orderModel.rusStatus.name }}</b>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Дата встречи:
+            </div>
+            <div class="pl-4 col">
+                {{ orderModel.receipt_date|default('не указано') }}
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Услуга:
+            </div>
+            <div class="pl-4 col">
+                <b>{{ orderModel.service.name }}</b>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Адрес заказа:
+            </div>
+            <div class="pl-4 col">
+                <b>{{ orderModel.address }}</b>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Описание:
+            </div>
+            <div class="pl-4 col">
+                {{ orderModel.description|default('отсутствует') }}
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Фото:
+            </div>
+            <div class="pl-4 col">
+                {% if orderPhotoUrl != null %}
+                    <img src="{{ orderPhotoUrl }}" class="w-100 img-fluid master-short-data">
+                {% else %}
+                    Нет фото.
+                {% endif %}
+            </div>
+        </div>
+
+        {% if orderModel.status != orderStatusCreated and orderModel.status != orderStatusNotAgree %}
+            {% if orderModel.master_profile_id != null %}
+                <div class="row my-3">
+                    <div class="col text-right px-0">
+                        Мастер:
+                    </div>
+                    <div id="bind-master-id" class="pl-4 col">
+                        <b>{{ orderModel.master.last_name|default('') }} {{ orderModel.master.first_name|default('не выбран') }}</b>
+                    </div>
+                </div>
+            {% elseif orderModel.salon_profile_id != null %}
+                <div class="row my-3">
+                    <div class="col text-right px-0">
+                        Салон:
+                    </div>
+                    <div id="bind-master-id" class="pl-4 col">
+                        <b>{{ orderModel.salon.name|default('') }}</b>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <div class="row my-3">
+            <div class="col text-right px-0">
+                Место:
+            </div>
+            <div id="bind-master-id" class="pl-4 col">
+                {{ orderModel.rusPlace |default('не важно') }}
+            </div>
+        </div>
+
+        {% if orderModel.plan_price > 0 %}
+            <div class="row my-3">
+                <div class="col text-right px-0">
+                    Бюджет:
+                </div>
+                <div id="bind-master-id" class="pl-4 col">
+                    {{ orderModel.plan_price }} руб.
+                </div>
+            </div>
+        {% endif %}
+
+        {% if orderModel.total > 0 %}
+            <div class="row my-3">
+                <div class="col text-right px-0">
+                    Стоимость заказа:
+                </div>
+                <div class="pl-4 col">
+                    <b>{{ orderModel.total }} руб.</b>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+
+    {% if orderModel.status == orderStatusCreated %}
+        <div id="find-master-result" class="mx-0">
+            <h4 class="pb-3 {{ hLg }}">Выберите мастеров</h4>
+            {% if masters|length == 0 %}
+                Мастера, могущие выполнить данный заказ не найдены.
+            {% else %}
+                {% for master in masters %}
+                    {{ block('masterPanel') }}
+                {% endfor %}
+
+                <div class="row pt-4 {{ isMaxW500 }}">
+                    <input id="btn-send-agree-master-to-order"
+                           class="btn btn-pink btn-brand font-weight-bold mx-auto {{ lbLg }} {{ minW_400_650 }} shadow"
+                           value="Отправить предложение мастеру"/>
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="find-master-result" class="mx-0">
+            <h4 class="py-3 {{ hLg }}">Выберите салоны</h4>
+            {% if salons|length == 0 %}
+                Салоны, могущие выполнить данный заказ не найдены.
+            {% else %}
+                {% for salon in salons %}
+                    {{ block('salonPanel') }}
+                {% endfor %}
+
+                <div class="row pt-4 {{ isMaxW500 }}">
+                    <input id="btn-send-agree-salon-to-order"
+                           class="btn btn-pink btn-brand font-weight-bold mx-auto {{ lbLg }} {{ minW_400_650 }} shadow"
+                           value="Отправить предложение салону"/>
+                </div>
+            {% endif %}
+        </div>
+
+    {% elseif orderModel.status == orderStatusNotAgree %}
+        <div id="find-master-result" class="mx-0">
+            {% if notAgreeMasters|length > 0 %}
+                <h4 class="pb-3 {{ hLg }}">Ожидаем отклика от мастеров</h4>
+                {% for master in notAgreeMasters %}
+                    {{ block('masterPanel') }}
+                {% endfor %}
+            {% endif %}
+
+            {% if notAgreeOwnMasters|length > 0 %}
+                <h4 class="pt-3 pb-3 {{ hLg }}">Предложения мастеров</h4>
+                <div class="not-agree-own-masters">
+                    {% for master in notAgreeOwnMasters %}
+                        {{ block('masterPanel') }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="find-salon-result" class="mx-0">
+            {% if notAgreeSalons|length > 0 %}
+                <h4 class="py-3 {{ hLg }}">Ожидаем отклика от салонов</h4>
+                {% for salon in notAgreeSalons %}
+                    {{ block('salonPanel') }}
+                {% endfor %}
+            {% endif %}
+
+            {% if notAgreeOwnSalons|length > 0 %}
+                <h4 class="py-3 {{ hLg }}">Предложения салонов</h4>
+                <div class="not-agree-own-salons">
+                    {% for salon in notAgreeOwnSalons %}
+                        {{ block('salonPanel') }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+    {% elseif orderModel.status == orderStatusAgree %}
+        <div class="row py-4 {{ isMaxW500 }}">
+            <input id="btn-cancel-agree-order"
+                   class="btn btn-warning btn-brand font-weight-bold mx-auto {{ lbLg }} {{ minW_400_650 }} shadow"
+                   value="Найти другого мастера или салон"/>
+        </div>
+
+    {% elseif orderModel.status == orderStatusDone %}
+        <div class="">
+            <h4 class="pb-3 {{ lbLg }}">Отзывы о заказе</h4>
+            <div id="client-reviews" class="">
+                {{ block('reviewsList') }}
+            </div>
+        </div>
+
+        <div class="pt-4 {{ isMaxW500 }}">
+            <div class="py-2 {{ lbLg }}">
+                <span class="pr-2">Оцените работу мастера (салона): </span>
+                <span id="review-assessment-1" number="1" class="fa fa-lg fa-star star-checked"></span>
+                <span id="review-assessment-2" number="2" class="fa fa-lg fa-star star-checked"></span>
+                <span id="review-assessment-3" number="3" class="fa fa-lg fa-star star-checked"></span>
+                <span id="review-assessment-4" number="4" class="fa fa-lg fa-star star-checked"></span>
+                <span id="review-assessment-5" number="5" class="fa fa-lg fa-star btn-outline-secondary"></span>
+            </div>
+
+            <textarea id="review-text" name="profile-about"
+                      maxlength="2000" rows="7" placeholder="Текст Вашего отзыва"
+                      class="form-control {{ controlLg }} shadow">{{ about }}</textarea>
+            <span class="small {{ smallLg }}">Длина поля ограничена - не более 2000 символов</span>
+
+            <div class="row pt-4">
+                <input id="btn-create-review"
+                       class="btn btn-pink btn-brand font-weight-bold mx-auto {{ lbLg }} {{ minW_400_650 }} shadow"
+                       value="Написать отзыв"/>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if orderModel.status != orderStatusDelete %}
+        <div class="row py-2 {{ isMaxW500 }}">
+            <input id="btn-delete-order"
+                   class="btn btn-danger btn-brand font-weight-bold mx-auto {{ lbLg }} {{ minW_400_650 }} shadow"
+                   value="Удалить заказ"/>
+        </div>
+    {% endif %}
+
+    {{ block('jsMasterPanel') }}
+    {{ block('jsSalonPanel') }}
+{% endblock %}
+
+{% block javascriptTwigComponents %}
+    <script type="text/javascript">
+        var orderId = '{{ orderModel.id }}';
+
+        //предложения мастеров =========================================================
+        {% if notAgreeOwnMasters|length > 0 %}
+        $('.not-agree-own-masters .btn-agree-div').show();
+        $('.not-agree-own-masters .btn-agree-div input').on('click', function () {
+            $.ajax({
+                url: '/lk/bindMaster',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'order-id': orderId,
+                    'master-profile-id': $(this).attr('master-id')
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        alert(data.message);
+                        window.location = '/lk/myOrders';
+                    } else {
+                        alert('Ошибка согласования заказа.');
+                    }
+                },
+                error: function () {
+                    alert('Ошибка согласования заказа.');
+                }
+            });
+        });
+        {% endif %}
+
+        //предложения салонов =========================================================
+        {% if notAgreeOwnSalons|length > 0 %}
+        $('.not-agree-own-salons .btn-agree-salon-div').show();
+        $('.not-agree-own-salons .btn-agree-salon-div input').on('click', function () {
+            $.ajax({
+                url: '/lk/bindSalon',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'order-id': orderId,
+                    'salon-profile-id': $(this).attr('salon-id')
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        alert(data.message);
+                        window.location = '/lk/myOrders';
+                    } else {
+                        alert('Ошибка согласования заказа.');
+                    }
+                },
+                error: function () {
+                    alert('Ошибка согласования заказа.');
+                }
+            });
+        });
+        {% endif %}
+
+        //отзывы заказа =========================================================
+        {% if orderModel.status == orderStatusDone %}
+        function getReviews() {
+            $('#btn-create-review').prop('disabled', true);
+            $.ajax({
+                url: '/lk/getReviews',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    'orderId': orderId,
+                },
+                success: function (data) {
+                    if (data && typeof data.tech_message !== 'undefined' && (data.error === false)) {
+                        $('#client-reviews').html('');
+                        var reviews = JSON.parse(data.tech_message);
+                        if (reviews.length > 0) {
+                            $('#client-reviews').append('<span>Отзывы о заказе: </span>');
+                            $(reviews).each(function (num, review) {
+                                $('#client-reviews').append('<div>' + review.date + ', Оценка: ' + review.assessment + ', Комментарий: ' + review.reviewText + '</div>');
+                            });
+                        }
+                    } else {
+                        alert('Ошибка получения списка отзывов для заказа.');
+                    }
+                },
+                error: function () {
+                    alert('Ошибка получения списка отзывов для заказа.');
+                }
+            });
+        }
+
+        getReviews();
+
+        $('.fa-star').each(function (num, el) {
+            $(el).click(function () {
+                var thisNum = $(el).attr('number');
+                $('.fa-star').each(function (num, el) {
+                    if (num < thisNum) {
+                        $(el).removeClass('btn-outline-secondary');
+                        $(el).addClass('star-checked');
+                    } else {
+                        $(el).removeClass('star-checked');
+                        $(el).addClass('btn-outline-secondary');
+                    }
+                });
+            });
+        });
+
+        function setAssessment() {
+            var assessment = 0;
+            $('.fa-star').each(function (num, el) {
+                if ($(el).hasClass('star-checked') === true) {
+                    assessment++;
+                }
+            });
+            return assessment;
+        }
+
+        $('#review-text').keyup(function () {
+            if ($('#review-text').val().length === 0) {
+                $('#btn-create-review').prop('disabled', true);
+            } else {
+                $('#btn-create-review').prop('disabled', false);
+            }
+        });
+
+        $('#btn-create-review').prop('disabled', true).on('click', function () {
+            $.ajax({
+                url: '/lk/createReview',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'order_id': orderId,
+                    'assessment': setAssessment(),
+                    'review_text': $('#review-text').val()
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        //обновить список отзывов
+                        $('#review-text').val('');
+                        getReviews();
+                    } else {
+                        alert('Ошибка сохранения отзыва для заказа.');
+                    }
+                }
+                ,
+                error: function () {
+                    alert('Ошибка сохранения отзыва для заказа.');
+                }
+            })
+            ;
+        });
+        {% endif %}
+
+
+        //мастера к заказу, для отправки согласования клиентом ===================================================
+
+        {% if orderModel.status == orderStatusCreated %}
+        $('.div-find-masters').on('click', function () {
+            //паразитный click на кнопки на плашке мастера
+            if (typeof $(window.event.target)[0] !== 'undefined'
+                && $(window.event.target)[0].tagName === 'INPUT') {
+                return;
+            }
+
+            $(this).toggleClass('btn-success');
+            $('#btn-send-agree-master-to-order').prop('disabled', !$(this).hasClass('btn-success'));
+        });
+
+        $('#btn-send-agree-master-to-order').prop('disabled', true).on('click', function () {
+            $.ajax({
+                url: '/lk/sendAgreeToMaster',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'order-id': orderId,
+                    'master-profile-id': $('.div-find-masters.btn-success').attr('master-id')
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        alert(data.message);
+                        window.location = '/lk/myOrders';
+                    } else {
+                        alert('Ошибка отправки заказа мастерам.');
+                    }
+                },
+                error: function () {
+                    alert('Ошибка отправки заказа мастерам.');
+                }
+            });
+        });
+
+        $('.div-find-salons').on('click', function () {
+            //паразитный click на кнопки на плашке мастера
+            if (typeof $(window.event.target)[0] !== 'undefined'
+                && $(window.event.target)[0].tagName === 'INPUT') {
+                return;
+            }
+
+            $(this).toggleClass('btn-success');
+            $('#btn-send-agree-salon-to-order').prop('disabled', !$(this).hasClass('btn-success'));
+        });
+
+        $('#btn-send-agree-salon-to-order').prop('disabled', true).on('click', function () {
+            $.ajax({
+                url: '/lk/sendAgreeToSalon',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'order-id': orderId,
+                    'salon-profile-id': $('.div-find-salons.btn-success').attr('salon-id')
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        alert(data.message);
+                        window.location = '/lk/myOrders';
+                    } else {
+                        alert('Ошибка отправки заказа салонам.');
+                    }
+                },
+                error: function () {
+                    alert('Ошибка отправки заказа салонам.');
+                }
+            });
+        });
+        {% endif %}
+
+        //Отказаться ==========================================================================================
+
+        $('#btn-cancel-agree-order').on('click', function () {
+            $.ajax({
+                url: '/lk/cancelAgreeOrder',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'order-id': orderId,
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        alert(data.message);
+                        window.location = '/lk/myOrders';
+                    } else {
+                        alert('Не удалось отменить согласование заказа.');
+                    }
+                },
+                error: function () {
+                    alert('Не удалось отменить согласование заказа.');
+                }
+            });
+        });
+
+        $('#btn-delete-order').on('click', function () {
+            $.ajax({
+                url: '/lk/deleteOrder',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'order-id': orderId,
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        alert(data.message);
+                        window.location = '/lk/myOrders';
+                    } else {
+                        alert('Не удалось удалить заказ.');
+                    }
+                },
+                error: function () {
+                    alert('Не удалось удалить заказ.');
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

@@ -1,0 +1,213 @@
+{% extends "lk/BaseControls.twig" %}
+
+{% block title %}{{ parent() }} - профиль{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    {{ block('editProfileAdmin') }}
+    <nav class="navbar navbar-expand-sm bg-bt-menu">
+    <ul class="navbar-nav">
+    <li class="nav-item pr-2">
+        <button class="btn btn-info {{ smallLg }}"
+                id="menu-button-edit-profile" type="button">
+            О компании
+        </button>
+    </li>
+    <li class="nav-item pr-2">
+        <button class="btn btn-info {{ smallLg }}"
+                id="menu-button-notification" type="button">
+            Подписка
+        </button>
+    </li>
+    <li class="nav-item pr-2">
+        <button class="btn btn-info {{ smallLg }}"
+                id="menu-button-portfolio" type="button">
+            Портфолио
+        </button>
+    </li>
+    {% if isMobile == true %}
+        </ul>
+        </nav>
+        <nav class="navbar navbar-expand-sm navbar-light bg-bt-menu pt-0">
+        <ul class="navbar-nav">
+    {% endif %}
+    <li class="nav-item pr-2">
+        <button class="btn btn-info {{ smallLg }}"
+                id="menu-button-schedule" type="button">
+            Время работы, тел.
+        </button>
+    </li>
+    <li class="nav-item pr-2">
+        <button class="btn btn-info {{ smallLg }}"
+                id="menu-button-service-cost" type="button">
+            Цена услуг
+        </button>
+    </li>
+    </ul>
+    </nav>
+
+    <div class="row my-3 pl-3">
+        <div class="{{ colCol_4 }} pl-0 ">
+            {% if avatarUrl != null %}
+                <img src="{{ avatarUrl }}" class="w-100 img-fluid master-short-data">
+            {% else %}
+                Нет фото.
+            {% endif %}
+        </div>
+        <div class="col {{ smallLg }}">
+            <b>{{ companyName }}</b>
+            <br>
+            <span><i class="fa fa-gratipay color-red fa-lg"></i>
+                Рейтинг: {{ rating }}
+            </span><br>
+            <span><i class="fa fa-map-marker color-blue fa-lg"></i>
+                 м. {{ nearSubway }}
+            </span>
+            <br>
+            <span><i class="fa fa-phone bt-color-green fa-lg"></i>
+                 {{ phone|default('телефон для связи не задан') }}
+            </span>
+            <br><br>
+            {% if profileDirections != null %}
+                {% for profileDirection in profileDirections %}
+                    {% if profileDirection.selected == 'selected' %}
+                        <span class="{{ smallLg }} pr-4 pb-3 text-nowrap">
+                            <i class="fa fa-check color-pink fa-lg"></i>
+                                {{ profileDirection.name }}
+                        </span>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <span class="{{ smallLg }}">Добавьте <a href="/lk/profile#directions">виды деятельности</a>.</span>
+            {% endif %}
+            <br><br>
+
+        </div>
+    </div>
+
+    <div class="my-3 {{ smallLg }}">
+        О себе: {{ about }}
+    </div>
+
+    <div class="row my-3 pl-3">
+        {% if workPhotos != null %}
+            {% for workPhoto in workPhotos %}
+                <div id="div-portfolio-photo-{{ workPhoto.id }}"
+                     class="p-1 mr-2 mb-3 master-short-data border border-info {{ mobileW_100_25 }}">
+                    <img src="{{ workPhoto.photoUrl }}" class="img-fluid d-block w-100">
+                    {% if workPhoto.about is not empty %}
+                        <span class="{{ smallLg }}">Подробности: {{ workPhoto.about }}</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <span class="{{ smallLg }}">Добавьте фото в <a href="/lk/portfolio">портфолио</a>.</span>
+        {% endif %}
+    </div>
+
+    <div class="my-3">
+        {% if profileServices != null %}
+            <span class="{{ smallLg }}">Популярные услуги:</span><br><br>
+            {% for profileService in profileServices %}
+                {% if profileService.selected == 'selected' %}
+                    <div class="{{ smallLg }} profile-services pr-4 pb-3 text-nowrap">
+                        <i class="fa fa-check color-pink fa-lg"></i>
+                        {% if profileService.cost > 0 %}
+                            {{ profileService.name }} - {{ profileService.cost }} руб.
+                        {% else %}
+                            {{ profileService.name }} - <a href="/lk/serviceCost">просмотреть прайс</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% if profileServices|length > viewInProfile %}
+                <a id="all-services" href="javascript:void(0);" class="{{ smallLg }}">
+                    Подробнее...
+                </a>
+            {% endif %}
+        {% else %}
+            <span class="{{ smallLg }}">Добавьте <a href="/lk/profile#services">выполняемые услуги</a>.</span>
+        {% endif %}
+    </div>
+
+    <div class="row my-4 pl-3">
+        <div class="col-2 pl-0 mt-1">
+            <span class="{{ smallLg }}">Оказание услуг:</span>
+        </div>
+        <div class="col">
+            <div class="btn-group btn-group-toggle display-only pt-2" data-toggle="buttons">
+                <label class="btn btn-outline-info {{ lbLg }} font-weight-bold min-w-150 {% if place == 'my-house' %} active {% endif %}">
+                    <input type="radio" name="profile-place" value="my-house" autocomplete="off"
+                            {% if place == 'my-house' %} checked {% endif %}>
+                    Выезд
+                </label>
+                <label class="btn btn-outline-info {{ lbLg }} font-weight-bold min-w-150 {% if place == 'master-house' %} active {% endif %}">
+                    <input type="radio" name="profile-place" value="master-house" autocomplete="off"
+                            {% if place == 'master-house' %} checked {% endif %}>
+                    У мастера
+                </label>
+                <label class="btn btn-outline-info {{ lbLg }} font-weight-bold min-w-150 {% if place == 'all-house' %} active {% endif %}">
+                    <input type="radio" name="profile-place" value="all-house" autocomplete="off"
+                            {% if place == 'all-house' %} checked {% endif %}>
+                    Не важно
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="my-3 {{ smallLg }}">
+        {% if address != null %}
+            <input id="profile-address-coord" name="profile-address-coord" type="hidden" value="{{ addressCoord }}">
+            <span class="{{ smallLg }}">Адрес: <b>{{ address }}</b></span>
+            <br><br>
+            <div id="map" class="yandex-map"></div>
+        {% else %}
+            <span class="{{ smallLg }}">Укажите <a href="/lk/profile#address">адрес</a>.</span>
+        {% endif %}
+    </div>
+
+    {{ block('reviewsList') }}
+    <br>
+    {% if reviews|length > viewInProfile %}
+        <a id="all-reviews" href="javascript:void(0);" class="{{ smallLg }}">
+            Подробнее...
+        </a>
+    {% endif %}
+{% endblock %}
+
+{% block javascriptTwigComponents %}
+    {{ block('javascriptAddressProfile') }}
+{% endblock %}
+
+{% block javascript %}
+$('#all-services').click(function () {
+    $('#all-services').hide();
+    $('.profile-services').show();
+});
+
+$('#all-reviews').click(function () {
+    $('#all-reviews').hide();
+    $('.review-div').show();
+});
+
+var profileServices = $('.profile-services');
+if (profileServices.length <= {{ viewInProfile }}){
+    $('#all-services').hide();
+}
+for (var i = {{ viewInProfile }}; i < profileServices.length; i++) {
+        $(profileServices[i]).hide();
+}
+
+var reviews = $('.review-div');
+for (var i = {{ viewInProfile }}; i < reviews.length; i++) {
+        $(reviews[i]).hide();
+}
+
+{{ parent() }}
+{% endblock %}

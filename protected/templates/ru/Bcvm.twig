@@ -1,0 +1,45 @@
+{% extends "Base.twig" %}
+
+{% block title %}Административная панель{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="pb-2 border-bottom text-center">{{ block('title') }}</h1>
+    </div>
+
+    <div class="container-fluid {{ smallLg }}">
+        <div>
+            Всего клиентов: <b class="text-nowrap">{{ clientCount }}</b> <br>
+            Всего мастеров: <b class="text-nowrap">{{ masterCount }}</b> <br>
+            В том числе мастеров, заполнивших профиль: <b class="text-nowrap">{{ masterProfileCount }}</b> <br>
+            В том числе, парикмахеров: <b class="text-nowrap">{{ hairdresserCount }}</b> <br>
+            Всего салонов: <b class="text-nowrap">{{ salonCount }}</b> <br>
+            Число заказов: <b class="text-nowrap">{{ orderCount }}</b> <br>
+            Число вакансий: <b class="text-nowrap">{{ vacancyCount }}</b> <br>
+            Сумма пополнений баланса: <b class="text-nowrap">{{ incomePaySum }}</b> <br>
+        </div>
+    </div>
+    <br>
+
+    <div class="container-fluid {{ smallLg }}">
+        <a href="/bcvm/users">Список пользователей</a>
+    </div>
+    <br>
+    <div class="container-fluid {{ smallLg }}">
+        <a href="/bcvm/clientOrders">Список заказов, сделанных самими клиентами</a>
+    </div>
+    <div class="container-fluid {{ smallLg }}">
+        <a href="/bcvm/salonOrders">Список заказов, сделанных салонами</a>
+    </div>
+    <br><br>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

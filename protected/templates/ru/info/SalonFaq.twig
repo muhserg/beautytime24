@@ -1,0 +1,30 @@
+{% extends "Base.twig" %}
+
+{% block title %}FAQ{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="d-flex">
+            <div class="card card-body my-1 shadow-sm">
+                <h1 class="pb-4 border-bottom text-center">Для каких услуг ищут профессионалов на сайте {{ siteNameRus }}?</h1>
+                <div class="topic-text ue-content">
+                    <ul>
+                    {% for profileDirection in profileDirections %}
+                        <li id="faq-direction-{{ profileDirection.id }}">{{ profileDirection.name }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

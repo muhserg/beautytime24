@@ -1,0 +1,36 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }}{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100 pl-4">
+        <ul class="pl-0">
+            <li>
+                Выбирайте лучших мастеров в удобное время
+            </li>
+            <li>
+                Экономьте на рекламе
+            </li>
+            <li>
+                Оставляйте вакансии
+            </li>
+            <li>
+                Собирайте отзывы и повышайте рейтинг
+            </li>
+            <li>
+                Зарабатывайте вместе с {{ siteNameRus }} и пополняйте свою клиентскую базу
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+{% endblock %}

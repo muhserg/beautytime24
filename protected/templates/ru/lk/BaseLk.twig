@@ -1,0 +1,1077 @@
+{% extends "Base.twig" %}
+
+{% block title %}Личный кабинет{% endblock %}
+{% block head %}
+    <script type="text/javascript" src="/js/popper.min.js"></script>
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid px-0">
+        <div class="container-fluid">
+            <h1 class="pb-2 border-bottom text-center">{{ block('title') }}</h1>
+        </div>
+
+        <div class="px-0 mx-0 row container-fluid">
+            <div id="navbarNav" class="col-3 bg-bt-menu" style="min-width:290px;">
+                <ul class="px-3 pt-3 left-menu">
+                    {% if userIsClient == true %}
+                        <li class="nav-item pb-2">
+                            <button class="btn {{ pl0 }} {{ smallLg }} {{ btnCreateOrderColor|default('btn-pink') }} w-100 pb-2"
+                                    id="menu-button-create-order" type="button">
+                                Борьба за мой заказ
+                            </button>
+                        </li>
+                        <li class="nav-item pb-2">
+                            <button class="btn {{ smallLg }} {{ btnCreateOrderColor|default('btn-pink') }} w-100 pb-2"
+                                    id="menu-button-find-master" type="button">
+                                Список мастеров
+                            </button>
+                        </li>
+                    {% elseif userIsMaster == true %}
+                        <li class="nav-item pb-2">
+                            <button class="btn {{ smallLg }} btn-pink w-100 pb-2"
+                                    id="menu-button-client-orders" type="button">
+                                Заказы клиентов
+                            </button>
+                        </li>
+                    {% elseif userIsSalon == true %}
+                        <li class="nav-item pb-2">
+                            <button class="btn {{ smallLg }} btn-pink w-100 pb-2"
+                                    id="menu-button-client-orders" type="button">
+                                Заказы клиентов
+                            </button>
+                        </li>
+                        <li class="nav-item pb-2">
+                            <button class="btn {{ smallLg }} {{ btnCreateOrderColor|default('btn-pink') }} w-100 pb-2"
+                                    id="menu-button-create-order" type="button">
+                                мастер под Запись
+                            </button>
+                        </li>
+                    {% endif %}
+
+                    <li class="nav-item pb-2">
+                        <button class="btn btn-info
+                                      {{ smallLg }} pb-2 w-100"
+                                id="menu-button-my-orders" type="button"
+                                {% if showOrdersInMenu == true %} data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" {% endif %}>
+                            Мои заказы
+                        </button>
+                        {% if showOrdersInMenu == true %}
+                            <div class="dropdown-menu bg-white" aria-labelledby="navbarDropdown">
+                                {% for order in myOrdersMenu %}
+                                    <a id="my-order-{{ order.id }}" order-id="{{ order.id }}"
+                                       class="dropdown-item {{ lbLg }} my-orders" href="#">
+                                        Заказ №{{ order.id }}</a>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </li>
+
+
+                    {% if userIsClient == true %}
+                        <li class="nav-item pb-sm-2">
+                            <button class="btn btn-info {{ smallLg }} w-100 pb-2"
+                                    id="menu-button-promotions" type="button">
+                                Акции рядом
+                            </button>
+                        </li>
+                    {% elseif userIsMaster == true or userIsSalon == true %}
+                        <li class="nav-item pb-sm-2">
+                            <button class="btn btn-info {{ smallLg }} w-100 pb-2"
+                                    id="menu-button-my-promotions" type="button">
+                                Мои акции
+                            </button>
+                        </li>
+                    {% endif %}
+
+                    <li class="nav-item pb-2">
+                        <button href="" class="btn btn-info {{ smallLg }} w-100 pb-2"
+                                id="menu-button-messages" type="button">
+                            Мои сообщения
+                        </button>
+                    </li>
+
+                    {% if userIsMaster == true or userIsSalon == true %}
+                        <li class="nav-item pb-2">
+                            <button href="" class="btn btn-info {{ smallLg }} w-100 pb-2"
+                                    id="menu-button-study" type="button">
+                                Обучение
+                            </button>
+                        </li>
+                        <li class="nav-item pb-2">
+                            <button class="btn btn-info {{ smallLg }} w-100 pb-2"
+                                    id="menu-button-vacancy" type="button">
+                                Вакансии
+                            </button>
+                        </li>
+                    {% endif %}
+
+
+                    <li class="nav-item pb-2">
+                        <button class="btn btn-info {{ smallLg }} w-100 pb-2"
+                                id="menu-button-profile" type="button">
+                            Мой профиль
+                        </button>
+                    </li>
+                    {% if userIsAdmin == true %}
+                        <li class="nav-item pb-2">
+                            <button class="btn btn-info {{ smallLg }} w-100 pb-2"
+                                    id="menu-button-admin" type="button">
+                                Администрирование
+                            </button>
+                        </li>
+                        <script type="text/javascript">
+                            $('#menu-button-admin').on('click', function (event) {
+                                window.location = '/bcvm';
+                            });
+                        </script>
+                    {% endif %}
+                </ul>
+
+                {% if userIsMaster == true or userIsSalon == true %}
+                    <ul class="px-3 pt-5 left-menu">
+                        <li class="nav-item pb-2">
+                            <button class="btn btn-info {{ smallLg }} w-100 pb-2"
+                                    id="menu-button-reviews" type="button">
+                                Отзывы
+                            </button>
+                        </li>
+
+                        {% if userIsMaster == true %}
+                            <li class="nav-item pb-2">
+                                <button class="btn {{ smallLg }} btn-info w-100 pb-2"
+                                        id="menu-button-find-salon" type="button">
+                                    Список салонов
+                                </button>
+                            </li>
+                        {% endif %}
+                        {% if userIsSalon == true %}
+                            <li class="nav-item pb-2">
+                                <button class="btn {{ smallLg }} btn-info w-100 pb-2"
+                                        id="menu-button-find-master" type="button">
+                                    Список мастеров
+                                </button>
+                            </li>
+                        {% endif %}
+
+                        <li class="nav-item pb-2">
+                            <button class="btn btn-info {{ smallLg }} w-100 pb-2"
+                                    id="menu-button-balance-up" type="button">
+                                Баланс
+                            </button>
+                        </li>
+                    </ul>
+                {% endif %}
+            </div>
+            <div id="contentLk" class="pl-4 col container-fluid pr-4">
+                {% block contentLk %}
+                {% endblock %}
+            </div>
+        </div>
+        <br><br>
+    </div>
+{% endblock %}
+
+    {% block reviewsList %}
+        {% if reviews|length == 0 %}
+            <div class="">
+                <span class="{{ smallLg }}">Отзывов пока нет.</span>
+            </div>
+        {% else %}
+            {% for review in reviews %}
+                <div class="review-div {{ isMaxW500 }} row ml-0 w-100 mr-2 master-short-data {{ smallLg }} text-center shadow"
+                     review-id="{{ review.id }}">
+                    <div class="px-2">
+                        <img class="{{ review.img_class }}" src="{{ review.avatarUrl }}"
+                             width="{{ imgSmallPhotoWidth }}"
+                             height="{{ imgSmallPhotoWidth }}">
+                    </div>
+                    <div class="col px-1 vertical-align">
+                        <div class="w-100">
+                         <span><i class="fa fa-clock-o fa-lg"></i>
+                             {{ review.date }}
+                        </span><br>
+                            <span>
+                            Услуга: {{ review.serviceName }}
+                        </span>
+                        </div>
+                    </div>
+                    <div class="col px-1 vertical-align">
+                        <div class="text-center mx-auto">
+                            {% for i in 1..review.assessment %}
+                                <span id="review-assessment-{{ i }}" number="1"
+                                      class="fa fa-lg fa-star star-checked"></span>
+                            {% endfor %}
+                            {% if review.assessment < 5 %}
+                                {% for i in review.assessment+1..5 %}
+                                    <span id="review-assessment-{{ i }}" number="1"
+                                          class="fa fa-lg fa-star btn-outline-secondary"></span>
+                                {% endfor %}
+                            {% endif %}
+
+                            <br>
+                            <span><i class="fa fa-comment-o fa-lg"></i>
+                                            Комментарий: {{ review.reviewText }}
+                                        </span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
+
+
+{% block editProfileAdmin %}
+    {% if userIsAdmin == true %}
+        Список для модерации: {{ profilesForModerate }}
+        <br><br>
+        <input id="profile-phone-number"
+               class="form-control {{ controlLg }} shadow" data-val="true"
+               placeholder="&#xf095; телефон при регистрации" type="tel" value="">
+        <br>
+        <button class="btn btn-warning {{ smallLg }} w-100 pb-2"
+                id="menu-button-edit-profile-by-admin" type="button">
+            Редактировать чужой профиль
+        </button>
+        <br>
+
+        <script src="/js/jquery.inputmask.bundle.min.js"></script>
+        <script type="text/javascript">
+            $("#profile-phone-number").inputmask("+7 (999) 999-99-99", {
+                clearIncomplete: true,
+                showMaskOnHover: true
+            });
+            $('#menu-button-edit-profile-by-admin').on('click', function (event) {
+                window.location = '/lk/profileByAdmin?userId=null&userPhone=' + $("#profile-phone-number").val().replace(/[^0-9]/gi, '');
+            });
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block userMessagePanel %}
+    <div class="div-user {{ isMaxW500 }} row bg-white ml-0 w-100 pointer mr-2 my-3 master-short-data shadow"
+         user-id="{{ user.user_id }}">
+        <div class="px-2">
+            <img class="{{ user.img_class }}" src="{{ user.avatarUrl }}"
+                 width="{{ imgSmallPhotoWidth }}"
+                 height="{{ imgSmallPhotoWidth }}">
+        </div>
+        <div class="col px-1 vertical-align">
+            <div class="w-100">
+                <div class="text-center {{ smallLg }} mx-auto">
+                    <span><i class="fa fa-user-circle fa-lg"></i>
+                        <b>{{ user.fio }}</b>
+                    </span><br>
+                    <span><i class="fa fa-comment-o fa-lg"></i>
+                        {{ user.short_last_message }} ...
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-2 my-3 btn-pink master-work-time px-1 mr-2 text-center">
+            <span class="pl-1 pr-2"><i class="fa fa-clock-o fa-lg"></i></span><br>
+            <span>{{ user.last_message_date }}</span><br>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $('.div-user').on('click', function () {
+            //паразитный click на кнопки на плашке мастера
+            if (typeof $(window.event.target)[0] !== 'undefined'
+                && $(window.event.target)[0].tagName === 'INPUT') {
+                return;
+            }
+
+            $(this).toggleClass('btn-success');
+            window.location = '/lk/messagesByUser?toUserId=' + $(this).attr('user-id');
+        });
+    </script>
+{% endblock %}
+
+
+    {% block messagesList %}
+        <div class="user-messages-div">
+            {% if messages|length == 0 %}
+                <div class="pb-1">
+                    <span class="{{ smallLg }}">Сообщения отсутствуют.</span>
+                </div>
+            {% else %}
+                {% for message in messages %}
+                    {% block messagePanel %}
+                        <div class="message-div {{ isMaxW500 }} mb-4 {% if message.from_user_id == userId %} bg-bt-menu {% else %} btn-info {% endif %} w-100 master-short-data {{ smallLg }} text-center shadow"
+                             review-id="{{ message.id }}">
+                            <div class="row">
+                                <div class="col px-1 vertical-align">
+                                    <div class="w-100">
+                                         <span><i class="fa fa-clock-o fa-lg"></i>
+                                             {{ message.date }}
+                                         </span>
+                                    </div>
+                                </div>
+                                <div class="col px-1">
+                                    <span>
+                                        <i class="fa fa-user-circle fa-lg"></i>
+                                        {% if message.from_user_id == userId %}
+                                            Я
+                                        {% else %}
+                                            {{ message.fromFio }}
+                                        {% endif %}
+                                    </span>
+                                    {% if message.order_id is not empty %}
+                                        <br><a href="/lk/order?id={{ message.order_id }}"
+                                               class="{% if message.from_user_id != userId %} btn-info {% endif %}">
+                                        Заказ №{{ message.order_id }}
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <hr class="my-0 border-2">
+                            <div class="px-1 text-left">
+                                <span>
+                                    <i class="fa fa-comment-o fa-lg"></i>
+                                    {{ message.message }}
+                                </span>
+                            </div>
+                        </div>
+                    {% endblock %}
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="{{ mobileW_w500_100 }}">
+            <div id="loading-div" class="loader mx-auto" style="display: none;"></div>
+        </div>
+        <div id="master-profile-message-{{ master.id }}"
+             class="{{ isMaxW500 }} mb-4 bg-bt-menu w-100 master-short-data text-center shadow">
+            <textarea id="create-message-text"
+                      maxlength="2000" rows="7" placeholder="Сообщение"
+                      data-val="true" data-val-required="Напишите сообщение."
+                      class="form-control {{ controlLg }} w-100 shadow"></textarea>
+            <button id="btn-message-send"
+                    class="btn-message-send btn-sm btn-pink {{ lbLg }} mt-2 pointer text-center">
+                Отправить
+            </button>
+        </div>
+        <script type="text/javascript">
+            $('.btn-message-send').on('click', function (event) {
+                var message = $('#create-message-text').val();
+                if (message === '') {
+                    alert('Напишите сообщение.');
+                    return;
+                }
+
+                $.ajax({
+                    url: '/lk/createAndReturnMessage',
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        'message': message,
+                        'user-id': {{ message.user_id }}
+                    },
+                    success: function (data) {
+                        if (data && (data.error === false)) {
+                            $('.user-messages-div').append(data.message);
+                            $('#create-message-text').val('');
+                        } else {
+                            alert('Ошибка отправки сообщения.');
+                        }
+                    },
+                    error: function () {
+                        alert('Ошибка отправки сообщения.');
+                    }
+                });
+            });
+        </script>
+    {% endblock %}
+
+
+
+    {% block promotionsList %}
+        {% if promotions|length == 0 %}
+            <span class="{{ smallLg }}">Акции отсутствуют.</span>
+        {% else %}
+            {% for promotion in promotions %}
+                <div class="promotion-div {{ isMaxW500 }} border border-info w-100 {{ smallLg }} text-center btn-light master-short-data shadow"
+                     promotion-id="{{ promotion.id }}">
+                    <div class="mx-auto p-2">
+                        <img src="{{ promotion.imageUrl }}"
+                             width="{{ imgPhotoWidth }}"
+                             height="{{ imgPhotoWidth }}" border="2">
+                        <div class="promotion-discount rounded-circle"
+                             style="width: 65px; height: 65px; top: {{ promotion.num*38.5 + 6 }}em;">
+                            <h4 class="pt-3">{{ promotion.discountInt }}%</h4>
+                        </div>
+                    </div>
+                    <div class="px-1">
+                        <div class="w-100">
+                            <i class="fa fa-font fa-lg"></i>
+                            {{ promotion.title }}
+                        </div>
+                        <div class="w-100">
+                            <i class="fa fa-clock-o fa-lg"></i>
+                            {{ promotion.dateBegin }} - {{ promotion.dateEnd|default('') }}
+                        </div>
+                        <div class="w-100">
+                            <i class="fa fa-map-marker color-blue fa-lg"></i>
+                            {{ promotion.address }}, м. {{ promotion.near_subway }}
+                        </div>
+                    </div>
+                    <div id="promotion-additional-{{ promotion.id }}" class="p-1 {{ lbLg }} collapse">
+                        Условия акции: {{ promotion.text }}
+                    </div>
+                </div>
+                <br><br>
+            {% endfor %}
+            <script type="text/javascript">
+                $('.promotion-div').on('click', function (event) {
+                    $(this).toggleClass('additional');
+                    $('#promotion-additional-' + $(this).attr('promotion-id')).toggleClass('collapse');
+                });
+            </script>
+        {% endif %}
+    {% endblock %}
+
+    {% block orderPanel %}
+        <div class="div-client-orders {{ lbLg }} bg-white mb-1 row ml-0 w-100 mr-2 master-short-data shadow"
+             order-id="{{ order.id }}">
+            <div class="col px-2 vertical-align">
+                <div class="text-center mx-auto">
+                    <span class="">Задача: {{ order.service.name }}</span>
+                    {% if order.near_subway != '' %}
+                        <br>
+                        <span class=""><i class="fa fa-map-marker color-blue fa-lg"></i>
+                            м. {{ order.near_subway }}
+                        </span>
+                    {% endif %}
+                    <br>
+                    <span class="">Место: {{ orderModel.rusPlace |default('не важно') }}</span>
+                    {% if order.plan_price > 0 %}
+                        <br>
+                        <span class="">Бюджет: {{ order.plan_price }} руб.</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div id="order-id-{{ order.id }}"
+                 class="col my-3 {{ order.color }} master-work-time px-1 mr-2 text-center pointer"
+                 onclick="window.location = '/lk/order?id={{ order.id }}'">
+                {% if order.distance is not empty %}
+                    <span><i class="fa fa-map-marker fa-lg"></i>&nbsp;
+                          <strong id="distanceFromClient-{{ order.id }}">{{ order.distance }}</strong> от Вас
+                    </span>
+                    <br>
+                {% endif %}
+                <span>{{ order.receipt_datetime|default('без даты') }}</span>
+                <br>
+                {% if order.total > 0 %}
+                    <span>Стоимость: {{ order.total }} руб.</span>
+                {% endif %}
+                <br>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block masterPanel %}
+        <div class="div-find-masters {{ isMaxW500 }} bg-white row ml-0 w-100 mr-2 my-3 master-short-data shadow"
+             master-id="{{ master.id }}">
+            <div class="pl-2 vertical-align">
+                <img class="{{ master.img_class }}" src="{{ master.avatarUrl }}"
+                     width="{{ imgSmallPhotoWidth }}"
+                     height="{{ imgSmallPhotoWidth }}">
+            </div>
+            <div class="col px-1 vertical-align">
+                <div class="w-100">
+                    <div class="text-center {{ smallLg }} mx-auto">
+                        <span>{{ master.fio }}</span><br>
+                        <span><i class="fa fa-gratipay color-red fa-lg"></i>
+                            Рейтинг: {{ master.rating }}
+                        </span>
+                        {% if master.phone is not empty %}
+                            <span><i class="fa fa-phone btn-outline-success fa-lg"></i>
+                                <img src="{{ master.phoneImg }}">
+                            </span>
+                        {% endif %}
+                        <br>
+                        <span><i class="fa fa-map-marker color-blue fa-lg"></i>
+                        {% if master.distance != '' %}
+                            {{ master.distance }} от Вас,
+                        {% endif %}
+                            {% if master.near_subway != '' %}
+                                м. {{ master.near_subway }}
+                            {% endif %}
+                    </span>
+                        {% if master.active == true %}
+                            <br><span class="btn-success">сейчас на сайте</span>
+                        {% endif %}
+                    </div>
+                    <div class="text-center mx-auto py-1">
+                        <nobr>
+                            <button id="btn-master-message-open-{{ master.id }}" master-id="{{ master.id }}"
+                                    class="btn-master-message-open btn-sm btn-info {{ lbLg }} mr-2 pointer text-center">
+                                Написать
+                            </button>
+                            <button id="btn-profile-{{ master.id }}" master-id="{{ master.id }}"
+                                    class="btn-profile-master btn-sm btn-info {{ lbLg }} text-center pointer">
+                                Профиль
+                            </button>
+                        </nobr>
+                        <div class="pt-1 btn-agree-div" style="display: none;">
+                            <button id="btn-agree-{{ master.id }}" master-id="{{ master.id }}"
+                                    class="pt-1 btn-sm btn-success {{ lbLg }} text-center pointer">
+                                Принять
+                            </button>
+                        </div>
+                        <div class="pt-1 btn-agree-order-div" style="display: none;">
+                            <button id="btn-agree-order-{{ master.id }}" master-id="{{ master.id }}"
+                                    class="pt-1 btn-sm btn-success {{ lbLg }} text-center pointer">
+                                Сделать заказ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if master.time_begin != null or master.time_end != null %}
+                <div class="col-2 my-3 btn-pink master-work-time px-1 mr-2 text-center">
+                    <span class="pl-1 pr-2"><i class="fa fa-clock-o fa-lg"></i></span><br>
+                    <span>{{ master.time_begin }}</span><br>
+                    <span>{{ master.time_end }}</span>
+                    {% if master.client_service_cost > 0 %}
+                        <br><span><b>{{ master.client_service_cost }}  р.</b></span>
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div id="master-profile-additional-{{ master.id }}" class="p-1 collapse">
+                <b>Адрес:</b> {{ master.address }}<br>
+                <b>Оказываемые услуги:</b> {{ master.services_list }}<br>
+                <b>Работы мастера:</b>
+                {% for photo in master.portfolio %}
+                    <img src="{{ photo.photoUrl }}" width="150">
+                {% endfor %}
+            </div>
+            <div id="master-profile-message-{{ master.id }}" class="w-100 text-center p-1 collapse">
+                <textarea id="create-master-message-{{ master.id }}"
+                          maxlength="2000" rows="7" placeholder="Сообщение"
+                          data-val="true" data-val-required="Напишите сообщение."
+                          class="form-control {{ controlLg }} w-100 shadow"></textarea>
+                <button id="btn-master-message-send-{{ master.id }}" master-id="{{ master.id }}"
+                        class="btn-master-message-send btn-sm btn-pink {{ lbLg }} mt-1 pointer text-center">
+                    Отправить
+                </button>
+            </div>
+        </div>
+    {% endblock %}
+    {% block jsMasterPanel %}
+        <script type="text/javascript">
+            $('.btn-profile-master').on('click', function (event) {
+                $(this).toggleClass('additional');
+                $('#master-profile-additional-' + $(this).attr('master-id')).toggleClass('collapse');
+            });
+
+            $('.btn-master-message-open').on('click', function (event) {
+                $(this).toggleClass('additional');
+                $('#master-profile-message-' + $(this).attr('master-id')).toggleClass('collapse');
+            });
+
+            $('.btn-master-message-send').on('click', function (event) {
+                var message = $('#create-master-message-' + $(this).attr('master-id')).val();
+                if (message === '') {
+                    alert('Напишите сообщение.');
+                    return;
+                }
+
+                $.ajax({
+                    url: '/lk/createMessage',
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        'message': message,
+                        'master-id': $(this).attr('master-id')
+                    },
+                    success: function (data) {
+                        if (data && (data.error === false)) {
+                            alert(data.message);
+                            $('#create-master-message-' + data.tech_message).val('');
+                            $('.btn-master-message-open').click();
+                        } else {
+                            alert('Ошибка отправки сообщения мастеру.');
+                        }
+                    },
+                    error: function () {
+                        alert('Ошибка отправки сообщения мастеру.');
+                    }
+                });
+            });
+        </script>
+    {% endblock %}
+
+
+    {% block salonPanel %}
+        <div class="div-find-salons {{ isMaxW500 }} bg-white row ml-0 w-100 mr-2 my-3 master-short-data shadow"
+             salon-id="{{ salon.id }}">
+            <div class="pl-2 vertical-align">
+                <img class="{{ salon.img_class }}" src="{{ salon.avatarUrl }}"
+                     width="{{ imgSmallPhotoWidth }}"
+                     height="{{ imgSmallPhotoWidth }}">
+            </div>
+            <div class="col px-1 vertical-align">
+                <div class="w-100">
+                    <div class="text-center {{ smallLg }} mx-auto">
+                        <span>{{ salon.name }}</span><br>
+                        <span><i class="fa fa-gratipay color-red fa-lg"></i>
+                                    Рейтинг: {{ salon.rating }}
+                        </span>
+                        {% if salon.phone is not empty %}
+                            <span><i class="fa fa-phone btn-outline-success fa-lg"></i>
+                                <img src="{{ salon.phoneImg }}">
+                            </span>
+                        {% endif %}
+                        <br>
+                        <span><i class="fa fa-map-marker color-blue fa-lg"></i>
+                        {% if salon.distance != '' %}
+                            {{ salon.distance }} от Вас,
+                        {% endif %}
+                            {% if salon.near_subway != '' %}
+                                м. {{ salon.near_subway }}
+                            {% endif %}
+                    </span>
+                        {% if salon.active == true %}
+                            <br><span class="btn-success">сейчас на сайте</span>
+                        {% endif %}
+                    </div>
+                    <div class="text-center mx-auto py-1">
+                        <nobr>
+                            <button id="btn-salon-message-open-{{ salon.id }}" salon-id="{{ salon.id }}"
+                                    class="btn-salon-message-open btn-sm btn-info {{ lbLg }} mr-2 pointer text-center">
+                                Написать
+                            </button>
+                            <button id="btn-profile-{{ salon.id }}" salon-id="{{ salon.id }}"
+                                    class="btn-profile-salon btn-sm btn-info {{ lbLg }} text-center pointer">
+                                Профиль
+                            </button>
+                        </nobr>
+                        <div class="pt-1 btn-agree-salon-div" style="display: none;">
+                            <button id="btn-agree" salon-id="{{ salon.id }}"
+                                    class="pt-1 btn-sm btn-success {{ lbLg }} text-center pointer">
+                                Принять
+                            </button>
+                        </div>
+                        <div class="pt-1 btn-agree-vacancy-div" style="display: none;">
+                            <button id="btn-agree-vacancy-{{ salon.id }}" salon-id="{{ salon.id }}"
+                                    class="pt-1 btn-sm btn-success {{ lbLg }} text-center pointer">
+                                Отправить резюме
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if salon.time_begin != null or salon.time_end != null %}
+                <div class="col-2 my-3 btn-pink master-work-time px-1 mr-2 text-center">
+                    <span class="pl-1 pr-2"><i class="fa fa-clock-o fa-lg"></i></span><br>
+                    <span>{{ salon.time_begin }}</span><br>
+                    <span>{{ salon.time_end }}</span>
+                    {% if salon.client_service_cost > 0 %}
+                        <br><span><b>{{ salon.client_service_cost }} р.</b></span>
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div id="salon-profile-additional-{{ salon.id }}" class="p-1 {{ smallLg }} collapse">
+                <b>Адрес:</b> {{ salon.address }}<br>
+                <b>Оказываемые услуги:</b> {{ salon.services_list }}<br>
+                {% if(salon.photoUrl != null) %}
+                    <b>Фото помещений салона:</b>
+                    <img src="{{ salon.photoUrl }}" width="150">
+                {% endif %}
+            </div>
+            <div id="salon-profile-message-{{ salon.id }}" class="w-100 text-center p-1 collapse">
+                <textarea id="create-salon-message-{{ salon.id }}"
+                          maxlength="2000" rows="7" placeholder="Сообщение"
+                          data-val="true" data-val-required="Напишите сообщение."
+                          class="form-control {{ controlLg }} w-100 shadow"></textarea>
+                <button id="btn-salon-message-send-{{ salon.id }}" salon-id="{{ salon.id }}"
+                        class="btn-salon-message-send btn-sm btn-pink {{ lbLg }} mt-1 pointer text-center">
+                    Отправить
+                </button>
+            </div>
+        </div>
+    {% endblock %}
+{% block jsSalonPanel %}
+    <script type="text/javascript">
+        $('.btn-profile-salon').on('click', function (event) {
+            $(this).toggleClass('additional');
+            $('#salon-profile-additional-' + $(this).attr('salon-id')).toggleClass('collapse');
+        });
+
+        $('.btn-salon-message-open').on('click', function (event) {
+            $(this).toggleClass('additional');
+            $('#salon-profile-message-' + $(this).attr('salon-id')).toggleClass('collapse');
+        });
+
+        $('.btn-salon-message-send').on('click', function (event) {
+            var message = $('#create-salon-message-' + $(this).attr('salon-id')).val();
+            if (message === '') {
+                alert('Напишите сообщение.');
+                return;
+            }
+
+            $.ajax({
+                url: '/lk/createMessage',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'message': message,
+                    'salon-id': $(this).attr('salon-id')
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        alert(data.message);
+                        $('#create-salon-message-' + data.tech_message).val('');
+                        $('.btn-salon-message-open').click();
+                    } else {
+                        alert('Ошибка отправки сообщения салону.');
+                    }
+                }
+                ,
+                error: function () {
+                    alert('Ошибка отправки сообщения салону.');
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block profileAdminMenu %}
+    <nav class="navbar navbar-expand-sm navbar-light bg-bt-menu">
+        <ul class="navbar-nav">
+            <li class="nav-item pr-2 {{ pt2 }}">
+                <button class="btn btn-info {{ smallLg }}"
+                        id="menu-button-users-admin" type="button">
+                    Список
+                </button>
+            </li>
+            <li class="nav-item pr-2 {{ pt2 }}">
+                <button class="btn btn-info {{ smallLg }}"
+                        id="menu-button-view-profile-admin" type="button">
+                    Просмотр
+                </button>
+            </li>
+            <li class="nav-item pr-2 {{ pt2 }}">
+                <button class="btn btn-info {{ smallLg }}"
+                        id="menu-button-profile-admin" type="button">
+                    Данные пользователя
+                </button>
+            </li>
+
+            {% if isMobile == true %}
+        </ul>
+    </nav>
+    <nav class="navbar navbar-expand-sm navbar-light bg-bt-menu pt-0">
+        <ul class="navbar-nav">
+            {% endif %}
+
+            <li class="nav-item pr-2 {{ pt2 }}">
+                <button class="btn btn-info {{ smallLg }}"
+                        id="menu-button-portfolio-admin" type="button">
+                    Портфолио
+                </button>
+            </li>
+            <li class="nav-item pr-2 {{ pt2 }}">
+                <button class="btn btn-info {{ smallLg }}"
+                        id="menu-button-service-cost-admin" type="button">
+                    Цена услуг
+                </button>
+            </li>
+        </ul>
+    </nav>
+    <script type="text/javascript">
+        var routingProfileAdmin = {
+            'menu-button-users-admin': '/bcvm/users',
+            'menu-button-view-profile-admin': '/lk/otherProfile?userId={{ uId }}',
+            'menu-button-profile-admin': '/lk/profileByAdmin?userId={{ uId }}',
+            'menu-button-service-cost-admin': '/lk/serviceCostByAdmin?userId={{ uId }}',
+            'menu-button-portfolio-admin': '/lk/portfolioByAdmin?userId={{ uId }}',
+        };
+
+        for (var btnId in routingProfileAdmin) {
+            $('#' + btnId).on('click', function (event) {
+                window.location = routingProfileAdmin[this.id];
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block createOrderForm %}
+    {% if isMobile == true %}
+        <style>
+            /* for bootstrap-select */
+            span.text, div.filter-option-inner-inner {
+                font-size: 1.7em !important;
+            }
+
+            /* for datepicker */
+            td.other-month, td.current-month, td.today, div.modal-footer > button, div[role=period] {
+                font-size: 1.7em !important;
+            }
+
+            div[role=calendar] {
+                width: 500px;
+            }
+
+            div[role=calendar] table {
+                width: 100%;
+            }
+        </style>
+    {% endif %}
+    <form id="buf-order-form" action="/lk/createOrder" method="post" role="form">
+        <input id="buf-master-id" type="hidden" name="buf-master-id" value="{{ masterBufProfileId }}">
+        <div class="{{ showRow }} mb-3">
+            <div class="{{ showCol }} pl-0" id="profile-services-container">
+                <select id="client-services" name="client-services"
+                        class="form-control {{ controlLg }} shadow"
+                        data-live-search="true"
+                        data-val="true" data-val-required="Требуется выбрать услугу.">
+                    {% for direction in directions %}
+                        <optgroup label="{{ direction.name }}">
+                            {% for service in services %}
+                                {% if service.direction_id == direction.id %}
+                                    {% if service.id == clientServices %}
+                                        <option value="{{ service.id }}"
+                                                selected>{{ service.name }}</option>
+                                    {% else %}
+                                        <option value="{{ service.id }}">{{ service.name }}</option>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </optgroup>
+                    {% endfor %}
+                </select>
+                <span class="field-validation-valid text-danger {{ smallLg }}"
+                      data-valmsg-for="client-services"
+                      data-valmsg-replace="true"></span>
+                <span class="small {{ smallLg }}">Если Вы не нашли нужную услугу - <a
+                            href="/main/feedBack">напишите нам</a> и мы ее добавим!</span>
+            </div>
+            <div class="{{ showCol }} pr-0">
+                <input id="client-address-coord" type="hidden" name="client-address-coord"
+                       value="{{ clientAddressCoord }}">
+                <input id="client-address" name="client-address"
+                       class="form-control {{ controlLg }} shadow" data-val="true"
+                       data-msg-maxlength="Длина поля ограничена - не более 300 символов"
+                       data-rule-maxlength="300"
+                       data-val-required="Требуется заполнить поле 'Адрес'."
+                       placeholder="&#xf2bc; Введите свой адрес"
+                       type="text" value="{{ clientAddress }}">
+                <div class="pt-2">
+                                    <span class="field-validation-valid text-danger {{ smallLg }}"
+                                          data-valmsg-for="client-address"
+                                          data-valmsg-replace="true"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="{{ showRow }} my-3">
+            <div class="{{ showCol }} px-0">
+                                <textarea id="order-about" name="order-about"
+                                          data-rule-maxlength="2000"
+                                          maxlength="2000" rows="4" placeholder="Опишите детали заказа"
+                                          class="form-control {{ controlLg }} shadow">{{ orderAbout }}</textarea>
+                <span class="small {{ smallLg }}">Длина поля ограничена - не более 2000 символов</span>
+            </div>
+        </div>
+
+        <div class="{{ showRow }} my-3">
+            <div class="{{ showCol }} pl-0 mb-3">
+                <input id="order-date" name="order-date"
+                       placeholder="&#xf017; Введите дату посещения"
+                       data-val="true" data-val-required="Требуется заполнить дату посещения."
+                       type='text' class="form-control {{ controlLg }} shadow"
+                       value="{{ orderDate }}"/>
+                <div class="pt-2">
+                                    <span class="field-validation-valid text-danger {{ smallLg }}"
+                                          data-valmsg-for="order-date"
+                                          data-valmsg-replace="true"></span>
+                </div>
+            </div>
+            <div class="{{ showCol }} pl-0 mb-3">
+                <input id="order-time" name="order-time"
+                       placeholder="&#xf017; Введите время посещения"
+                       data-val="true" data-val-required="Требуется заполнить время посещения."
+                       type='text' class="form-control {{ controlLg }} shadow"
+                       value="{{ orderTime }}"/>
+                <div class="pt-2">
+                                    <span class="field-validation-valid text-danger {{ smallLg }}"
+                                          data-valmsg-for="order-time"
+                                          data-valmsg-replace="true"></span>
+                </div>
+            </div>
+            <div class="{{ showCol }} pr-0">
+                <input id="order-cost" name="order-cost"
+                       placeholder="&#xf0d6;  Цена/бюджет (руб.)"
+                       type="number" step="0.01" min="0" value="{{ orderCost }}"
+                       class="form-control {{ controlLg }} input-small shadow">
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col text-center px-0">
+                <div class="btn-group btn-group-toggle pt-2 mb-2" data-toggle="buttons">
+                    <label class="btn btn-outline-info {{ lbLg }} font-weight-bold min-w-150 {% if orderPlace == 'my-house' %} active {% endif %}">
+                        <input type="radio" name="order-place" value="my-house" autocomplete="off"
+                               data-val="true" data-val-required="Требуется выбрать место оказания услуг."
+                                {% if orderPlace == 'my-house' %} checked {% endif %}>
+                        Выезд
+                    </label>
+                    <label class="btn btn-outline-info {{ lbLg }} font-weight-bold min-w-150 {% if orderPlace == 'master-house' %} active {% endif %}">
+                        <input type="radio" name="order-place" value="master-house" autocomplete="off"
+                                {% if orderPlace == 'master-house' %} checked {% endif %}>
+                        У мастера
+                    </label>
+                    <label class="btn btn-outline-info {{ lbLg }} font-weight-bold min-w-150 {% if orderPlace == 'all-house' %} active {% endif %}">
+                        <input type="radio" name="order-place" value="all-house" autocomplete="off"
+                                {% if orderPlace == 'all-house' %} checked {% endif %}>
+                        Не важно
+                    </label>
+                </div>
+                <br><span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="order-place"
+                          data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="w-100 text-center px-0">
+            <input id="find-master-for-order"
+                   class="btn btn-brand btn-pink min-w-500 {{ lbLg }} shadow"
+                   type="submit" value="Получить предложения от мастеров"/>
+        </div>
+    </form>
+    <script type="text/javascript">
+        $('#find-master-for-order').on('click', function (event) {
+            if ($('#client-address').val() !== '') {
+                ymaps.geocode($('#client-address').val()).then(function (res) {
+                    $('#client-address-coord').val(res.geoObjects.get(0).geometry.getCoordinates().join(','));
+                    $('#buf-order-form').submit();
+                });
+            } else {
+                $('#buf-order-form').submit();
+            }
+
+            return false;
+        });
+
+        $('#client-services').selectpicker({
+            title: '-- Выберите услугу --',
+            size: 6
+        });
+
+        $("#order-date").inputmask("99.99.9999", {clearIncomplete: true, showMaskOnHover: true});
+        $("#order-time").inputmask("99:99", {clearIncomplete: true, showMaskOnHover: true});
+        $("#phone-number").inputmask("+7 (999) 999-99-99", {clearIncomplete: true, showMaskOnHover: true});
+
+        var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+        $('#order-date').datepicker({
+            format: 'dd.mm.yyyy',
+            footer: false,
+            locale: 'ru-ru',
+            minDate: today,
+            weekStartDay: 1,
+            uiLibrary: 'bootstrap4',
+            icons: {
+                rightIcon: '<i class="gj-icon {{ lbLg_pt2 }}">event</i>'
+            }
+        });
+    </script>
+{% endblock %}
+
+
+    {% block sberbankPay %}
+        <input id="sber-pay-button" type="text" style="min-width:250px;"
+               class="btn btn-pink font-weight-bold btn-brand shadow"
+               onclick="ipayCheckout({
+                            amount:100,
+                            currency:'RUB',
+                            order_number:'',
+                            description: 'Пополнить баланс'},
+                            function(order) { showSuccessfulPurchase(order) },
+                            function(order) { showFailurefulPurchase(order) }
+                   )"
+               value="Пополнить баланс &#xf105;"/>
+    {% endblock %}
+
+    {% block javascript %}
+
+    var routing = {
+        'menu-button-profile': '/lk/viewProfile',
+        'menu-button-offer': '/info/offer',
+        'menu-button-create-order': '/lk/createOrderPage',
+        'menu-button-chat': '/lk/chat',
+        'menu-button-reviews': '/lk/reviews',
+        'menu-button-client-orders': '/lk/clientOrders',
+        'menu-button-vacancy': '/lk/vacancies',
+        'menu-button-promotions': '/lk/promotions',
+        'menu-button-my-promotions': '/lk/myPromotions',
+        'menu-button-master-not-agree-orders': '/lk/notAgreeOrders',
+        'menu-button-my-orders': '/lk/myOrders',
+        'menu-button-messages': '/lk/messages',
+        'menu-button-find-master': '/lk/findMasterPage',
+        'menu-button-find-salon': '/lk/findSalonPage',
+        'menu-button-study': '/lk/study'
+    };
+
+    for (var btnId in routing) {
+        $('#' + btnId).on('click', function (event) {
+            window.location = routing[this.id];
+        });
+    }
+
+    var routingProfile = {
+        'menu-button-view-profile': '/lk/viewProfile',
+        'menu-button-edit-profile': '/lk/profile',
+        'menu-button-schedule': '/lk/schedule',
+        'menu-button-service-cost': '/lk/serviceCost',
+        'menu-button-notification': '/lk/notification',
+        'menu-button-portfolio': '/lk/portfolio',
+    };
+
+    for (var btnId in routingProfile) {
+        $('#' + btnId).on('click', function (event) {
+            window.location = routingProfile[this.id];
+        });
+    }
+
+    $('.my-orders').on('click', function (event) {
+        window.location = '/lk/order/?id=' + $(this).attr('order-id');
+    });
+
+    $('.search-master').on('click', function (event) {
+        window.location = '/lk/searchMaster/?directionId=' + $(this).attr('direction-id');
+    });
+
+    $('.search-master-salon').on('click', function (event) {
+        window.location = '/lk/searchMasterSalon/?directionId=' + $(this).attr('direction-id');
+    });
+
+    $('.search-salon').on('click', function (event) {
+        window.location = '/lk/searchSalon/?directionId=' + $(this).attr('direction-id');
+    });
+
+    $('.btn-chat').on('click', function (event) {
+        window.location = '/lk/chat';
+    });
+
+    //loading
+    $(document)
+        .ajaxStart(function () {
+            $('#loading-div').show();
+        })
+        .ajaxStop(function () {
+            $('#loading-div').hide();
+        });
+
+
+    {% if userIsClient != true %}
+        $('#menu-button-balance-up').on('click', function (event) {
+            window.location = '/lk/roboPay';
+        });
+    {% endif %}
+{% endblock %}

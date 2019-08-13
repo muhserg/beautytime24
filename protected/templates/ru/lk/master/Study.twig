@@ -1,0 +1,39 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - обучение{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="row pt-4 {{ isMaxW500 }}">
+        <input id="button-find-school"
+               class="btn btn-info btn-brand font-weight-bold mx-auto {{ smallLg }} {{ minW_400_650 }} shadow"
+               value="Школы красоты"/>
+    </div>
+    <div class="row pt-4 {{ isMaxW500 }}">
+        <input id="button-video-study"
+               class="btn btn-info btn-brand font-weight-bold mx-auto {{ smallLg }} {{ minW_400_650 }} shadow"
+               value="Видео обучение"/>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+var routingThanks = {
+    'button-find-school': '/lk/findSchoolPage',
+    'button-video-study': '/lk/studyVideo',
+    'button-create-school': '/lk/createSchoolPage'
+};
+
+for (var btnId in routingThanks) {
+    $('#' + btnId).on('click', function (event) {
+        window.location = routingThanks[this.id];
+    });
+}
+
+{{ parent() }}
+{% endblock %}

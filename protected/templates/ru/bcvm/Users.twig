@@ -1,0 +1,74 @@
+{% extends "Base.twig" %}
+
+{% block title %}Все пользователи, кроме админов{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid pt-2">
+        <h1 class="pb-2 border-bottom text-center">{{ block('title') }}</h1>
+    </div>
+
+    <div class="container-fluid">
+        <table class="w-100">
+            <tr class="btn-primary">
+                {% for userColumn in userRusColumns %}
+                    <th class="text-center">
+                        {{ userColumn }}
+                    </th>
+                {% endfor %}
+            </tr>
+            {% for user in users %}
+                <tr class="btn-light text-center">
+                    {% for columnName, columnValue in user %}
+                        <td>
+                            {% if columnName == 'confirm_phone' %}
+                                {% if columnValue == '1' %}
+                                    Подтвержден
+                                {% else %}
+                                    <div id="btn-confirm-phone-{{ user['id'] }}">
+                                        <button class="pointer" onclick="confirmPhone({{ user['id'] }})">
+                                            Подтвердить
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            {% elseif columnName == 'login' %}
+                                <a href="/lk/profileByAdmin?userId={{ user['id'] }}">{{ columnValue }}</a>
+                            {% else %}
+                                {{ columnValue }}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+function confirmPhone(userId) {
+    $.ajax({
+        url: '/bcvm/confirmPhone',
+        dataType: "json",
+        type: "POST",
+        data: {
+            'user-id': userId
+        },
+        success: function (data) {
+            if (data && (data.error === false)) {
+                $('#btn-confirm-phone-' + data.tech_message).html('Подтвержден');
+            } else {
+                alert('Ошибка подтверждения телефона.');
+            }
+        },
+        error: function () {
+            alert('Ошибка подтвержденя телефона.');
+        }
+    });
+}
+{% endblock %}

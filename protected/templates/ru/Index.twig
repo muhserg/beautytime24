@@ -1,0 +1,143 @@
+{% extends "Controls.twig" %}
+
+{% block title %}Сеть бьюти мастеров{% endblock %}
+{% block head %}
+    <script type="text/javascript" src="/js/popper.min.js"></script>
+    {{ parent() }}
+    <meta name="yandex-verification" content="f3b59eb739a7bd26"/>
+    <meta name="yandex-verification" content="34909beb9b542807"/>
+    <meta name="Description"
+          content="Станьте мастером {{ SITE_NAME_RUS }}! Место где мастера и клиенты находят друг друга. Проверенные мастера. Достоверные отзывы. Надежный помощник для салонов красоты.">
+
+    <script charset="UTF-8" src="//cdn.sendpulse.com/js/push/bb6b3fa49c316824c0e7151f83c4cae3_0.js"
+            async></script>
+{% endblock %}
+
+{% block headAdditional %}
+    {{ block('bufOrderHead') }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid bt-light-ground px-0">
+        <h1 class="pb-2 pt-0 mb-0 {{ hLg }} text-center">
+            оставь заявку на услугу и получай предложения от мастеров
+            <br>
+            <span class="fa fa-arrow-down pt-2 px-4"></span>
+            <span class="fa fa-arrow-down pt-2 px-4"></span>
+            <span class="fa fa-arrow-down pt-2 px-4"></span>
+        </h1>
+        <div class="card card-body mb-1 px-0 bt-light-ground shadow-sm">
+            <div class="pb-4 text-center container-fluid">
+                {{ block('findMasterIndex') }}
+            </div>
+        </div>
+        <div>
+            <div class="py-3 mx-auto text-center {{ smallLg }}">
+                Мы подготовили для вас небольшой ролик о том, как устроен BeautyTime24 для исполнителей.
+                Во время просмотра рекомендуем развернуть видео на полный экран.
+            </div>
+            <div class="h-500 pb-3 px-4">
+                <div class="py-3 video-container mx-auto text-center">
+                    <iframe width="720" height="480" class="pb-0"
+                            src="{{ youAboutCompanyUrl }}" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <h4 class="border-top {{ hLg }} text-center">
+                Заказы наших клиентов
+            </h4>
+            <div class="px-4 pb-2 {{ lbLg }}">
+                {% for order in rand5Orders %}
+                    <div class="row ml-0 w-100 {{ isMaxW500 }} mr-2 master-short-data bg-white text-center mx-auto shadow">
+                        <div class="col px-2 vertical-align">
+                            <div class="text-center mx-auto">
+                                <span class="">Когда нужно: {{ order.receipt_date }}</span><br>
+                                <span class="">Задача: {{ order.service.name }}</span>
+                            </div>
+                        </div>
+                        <div class="col-3 my-3 btn-info master-work-time px-1 mr-2 text-center">
+                            <span>Бюджет:<br>{{ order.plan_price }} руб.</span><br>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <h4 class="pb-2 mt-2 pt-2 {{ hLg }} border-top text-center">
+                Отзывы
+            </h4>
+            <div class="text-center">
+                {% for youBtReviewUrl in youBtReviewUrls %}
+                    {% if isMobile == true %}
+                        <iframe width="720" height="480" class="pb-0"
+                                src="{{ youBtReviewUrl }}" frameborder="0" allowfullscreen></iframe>
+                        <br><br>
+                    {% else %}
+                        <iframe width="240" height="180" class="pb-0"
+                                src="{{ youBtReviewUrl }}" frameborder="0" allowfullscreen></iframe>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row {{ mobileW_100_75 }} {{ lbLg }} mx-auto">
+        <div class="col text-center">
+            <i>Для клиентов</i>
+            <br><a href="/info/rules" class="text-info">Правила сервиса</a>
+            <br><a href="/info/clientFaq" class="text-info">Частые вопросы</a>
+            <br><a href="/info/contacts" class="text-info">Контакты</a>
+        </div>
+        <div class="col text-center">
+            <i>Для мастеров</i>
+            <br><a href="/info/masterFaq" class="text-info">Как это работает</a>
+            <br><a href="/info/masterInstruction" class="text-info">Вакансии</a>
+            <br><a href="/info/pay" class="text-info">
+                <nobr>Оплата</nobr>
+            </a>
+        </div>
+        <div class="col text-center">
+            <i>Для салонов красоты</i>
+            <br><a href="info/salonFaq" class="text-info">Как это работает</a>
+            <br><a href="/info/pay" class="text-info">
+                <nobr>Оплата</nobr>
+            </a>
+        </div>
+    </div>
+    <br>
+{% endblock %}
+
+
+{% block javascriptTwigComponents %}
+    {{ block('javascriptFindMasterIndex') }}
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}
+
+{% block yandexMetrika %}
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+        (function (m, e, t, r, i, k, a) {
+            m[i] = m[i] || function () {
+                (m[i].a = m[i].a || []).push(arguments)
+            };
+            m[i].l = 1 * new Date();
+            k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+        })
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+        ym(53047162, "init", {
+            clickmap: true,
+            trackLinks: true,
+            accurateTrackBounce: true
+        });
+    </script>
+    <noscript>
+        <div><img src="https://mc.yandex.ru/watch/53047162" style="position:absolute; left:-9999px;" alt=""/></div>
+    </noscript>
+    <!-- /Yandex.Metrika counter -->
+{% endblock %}

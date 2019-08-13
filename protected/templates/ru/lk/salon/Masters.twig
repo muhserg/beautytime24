@@ -1,0 +1,38 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - поиск салонов и мастеров{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100 pl-3">
+        <div>
+            <i class="{{ lbLg }}">Мастера в радиусе {{ masterRadius }} км от Вас.</i>
+
+            {% if masters|length == 0 %}
+                <p class="{{ lbLg }}">
+                    Мастера, могущие выполнить данный заказ не найдены.
+                </p>
+            {% else %}
+                {% for master in masters %}
+                    {{ block('masterPanel') }}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    {{ block('jsMasterPanel') }}
+{% endblock %}
+
+{% block javascript %}
+$('#btn-salon-chat').on('click', function (event) {
+    window.location = '/lk/chat';
+});
+
+
+{{ parent() }}
+{% endblock %}

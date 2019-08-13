@@ -1,0 +1,65 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - найти мастера для заказа клиента{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100 {{ isMaxW500 }} pl-3">
+        <h4 class="{{ lbLg }}">Новые заказы клиентов салона</h4>
+        {% if createdOrders|length == 0 %}
+            <span class="{{ smallLg }}">Заказы клиентов салона отсутствуют.</span>
+        {% else %}
+            {% for order in createdOrders %}
+                {{ block('orderPanel') }}
+            {% endfor %}
+        {% endif %}
+
+        <br><br>
+        <h4 class="{{ lbLg }}">
+            Отправленные на согласование к мастеру
+        </h4>
+        {% if notAgreeOrders|length == 0 %}
+            <span class="{{ smallLg }}">Предложения отсутствуют.</span>
+        {% else %}
+            {% for order in notAgreeOrders %}
+                {{ block('orderPanel') }}
+            {% endfor %}
+        {% endif %}
+
+        <br><br>
+        <h4 class="{{ lbLg }}">Согласованные с мастером заказы клиентов салона</h4>
+        {% if agreeOrders|length == 0 %}
+            <span class="{{ smallLg }}">Заказы отсутствуют.</span>
+        {% else %}
+            {% for order in agreeOrders %}
+                {{ block('orderPanel') }}
+            {% endfor %}
+        {% endif %}
+
+        <br><br>
+        <h4 class="{{ lbLg }}">Выполненные заказы клиентов салона</h4>
+        {% if doneOrders|length == 0 %}
+            <span class="{{ smallLg }}">Заказы отсутствуют.</span>
+        {% else %}
+            {% for order in doneOrders %}
+                {{ block('orderPanel') }}
+            {% endfor %}
+        {% endif %}
+
+    </div>
+{% endblock %}
+
+{% block javascript %}
+//обновление страницы по таймеру
+var timerPageRefresh = setTimeout(function () {
+    window.location.reload();
+}, {{ pageRefreshTime }});
+
+{{ parent() }}
+{% endblock %}

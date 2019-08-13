@@ -1,0 +1,35 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block head %}
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block baseContent %}
+    {% if salons|length == 0 %}
+        <h4 class="{{ lbLg }}">
+            Салоны красоты не найдены.
+        </h4>
+    {% else %}
+        {% for salon in salons %}
+            {{ block('salonPanel') }}
+        {% endfor %}
+    {% endif %}
+
+    {{ block('jsSalonPanel') }}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block javascript %}
+    $('.btn-agree-vacancy-div').show();
+
+    $('.btn-agree-vacancy-div input').on('click', function () {
+        window.location = '/lk/vacancies?salonId=' + $(this).attr('salon-id');
+    });
+{% endblock %}
+
+{% block yandexMetrika %}
+{% endblock %}

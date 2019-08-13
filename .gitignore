@@ -1,0 +1,12 @@
+.idea
+base
+log
+runtime
+vendor
+config/db.local.php
+img/photo
+img/old_photo
+img/portfolio
+img/old_portfolio
+img/small_photo
+img/order_photo

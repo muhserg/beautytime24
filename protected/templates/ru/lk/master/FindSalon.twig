@@ -1,0 +1,27 @@
+{% extends "lk/BaseControls.twig" %}
+
+{% block title %}{{ parent() }} - поиск салонов красоты {% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100 pl-0">
+        {{ block('contentFindSalon') }}
+    </div>
+{% endblock %}
+
+
+{% block javascriptTwigComponents %}
+    {{ block('javascriptFieldValidation') }}
+    {{ block('javascriptAddressProfile') }}
+    {{ block('javascriptFindSalon') }}
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

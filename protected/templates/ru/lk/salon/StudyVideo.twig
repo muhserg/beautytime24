@@ -1,0 +1,172 @@
+{% extends "lk/BaseControls.twig" %}
+
+{% block title %}{{ parent() }} - видео обучение{% endblock %}
+{% block head %}
+    {{ parent() }}
+    {{ block('javascriptFieldValidation') }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="row pb-2 mx-0">
+        {% if videos|length == 0 %}
+            <span class="{{ smallLg }}">Нет видео.</span>
+        {% else %}
+            {% for video in videos %}
+                <div id="study-video-div-{{ video.id }}" class="p-1 {{ mobileW_w500_100 }} border border-info">
+                    <div class="{{ lbLg }} pb-2 text-center">
+                        <b>{{ video.title }}</b>
+                    </div>
+
+                    <div class="h-500 pb-3 px-1">
+                        <div class="video-container mx-auto text-center">
+                            <iframe width="720" height="480" class="pb-0"
+                                    src="{{ video.link }}" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </div>
+
+                    <div class="{{ smallLg }} pt-2">
+                        Описание: {{ video.description }}
+                    </div>
+                    <div class="pt-1">
+                        <a href="#" class="{{ lbLg }}" onclick='deleteStudyVideo({{ video.id }})'>
+                            удалить видео
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="pt-4 mx-auto">
+        <span class="{{ lbLg }}"><b>Добавить видео?</b></span>
+    </div>
+
+    <form id="portfolio-form" action="/lk/saveStudyVideo" class="form-horizontal" method="post" role="form"
+          enctype="multipart/form-data">
+        <div id="portfolio-validation-summary-valid"
+             class="validation-summary-valid {{ smallLg }} text-danger" data-valmsg-summary="true">
+            <ul>
+                <li style="display:none"></li>
+            </ul>
+        </div>
+
+        <div class="row my-3">
+            <div class="{{ lbProfile }} pt-1  {{ smallLg }} ">
+                Направление:<span class="text-danger">*</span>
+            </div>
+            <div class="pl-4 col-xl-10">
+                <select id="study-video-direction" name="study-video-direction"
+                        class="form-control {{ controlLg }} mb-1 shadow"
+                        data-val="true" data-val-required="Требуется выбрать направление.">
+                    <option value="">-- Выберите область деятельности --</option>
+                    {% for direction in directions %}
+                        {% if direction.id == directionId %}
+                            <option value="{{ direction.id }}" selected>{{ direction.name }}</option>
+                        {% else %}
+                            <option value="{{ direction.id }}">{{ direction.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <span class="field-validation-valid {{ smallLg }} text-danger"
+                      data-valmsg-for="study-video-direction"
+                      data-valmsg-replace="true"></span>
+                <span class="small {{ smallLg }}">
+                Если Вы не нашли нужное направление - <a href="/main/feedBack">напишите нам</a> и мы ее добавим!
+            </span>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="{{ lbProfile }} pt-1  {{ smallLg }} ">
+                Заголовок:<span class="text-danger">*</span>
+            </div>
+            <div class="pl-4 col-xl-10">
+                <input id="study-video-title" name="study-video-title"
+                       class="form-control  {{ controlLg }} shadow" data-val="true"
+                       data-msg-maxlength="Длина поля ограничена - не более 200 символов"
+                       data-rule-maxlength="200" data-val-required="Требуется выбрать заголовок."
+                       placeholder="&#xf167;  Укажите заголовок"
+                       type="text" value="{{ title }}">
+                <span class="field-validation-valid {{ smallLg }} text-danger"
+                      data-valmsg-for="study-video-title"
+                      data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="{{ lbProfile }} pt-1  {{ smallLg }} ">
+                Ссылка на видео:<span class="text-danger">*</span>
+            </div>
+            <div class="pl-4 col-xl-10">
+                <input id="study-video-link" name="study-video-link"
+                       class="form-control {{ controlLg }} shadow" data-val="true"
+                       data-msg-maxlength="Длина поля ограничена - не более 200 символов"
+                       data-rule-maxlength="200" data-val-required="Требуется указать ссылку на видео в youtube."
+                       placeholder="&#xf16a;  Укажите ссылку на Youtube"
+                       type="text" value="{{ link }}">
+                <span class="field-validation-valid {{ smallLg }} text-danger"
+                      data-valmsg-for="study-video-link"
+                      data-valmsg-replace="true"></span>
+                <span class="{{ smallLg }}">
+                    Например: https://www.youtube.com/embed/59ytVV990zY
+                </span>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="{{ lbProfile }} pt-1  {{ smallLg }} ">
+                Описание к видео:<span class="text-danger">*</span>
+            </div>
+            <div class="pl-4 col-xl-10">
+                 <textarea id="study-video-description" name="study-video-description"
+                           maxlength="2000" rows="7" data-val="true"
+                           data-rule-maxlength="2000"
+                           placeholder="Описание к видео"
+                           data-val-required="Требуется заполнить описание"
+                           data-msg-maxlength="Длина комментария ограничена - не более 2000 символов"
+                           class="form-control {{ controlLg }} shadow">{{ description }}</textarea>
+                <span class="field-validation-valid {{ smallLg }} text-danger"
+                      data-valmsg-for="study-video-description"
+                      data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="mx-auto w-100 p-3">
+            <input id="study-video-save" type="submit"
+                   class="btn btn-pink font-weight-bold {{ lbLg }} {{ minW_300_500 }} bt-button-save shadow"
+                   value="Добавить"/>
+        </div>
+    </form>
+{% endblock %}
+
+{% block javascriptTwigComponents %}
+{% endblock %}
+
+{% block javascript %}
+
+function deleteStudyVideo(videoId) {
+    if (confirm('Удалить видео?') === true) {
+        $.ajax({
+            url: '/lk/deleteStudyVideo/?id=' + videoId,
+            dataType: "json",
+            type: "GET",
+            success: function (data) {
+                if (data && (data.error === false)) {
+                    $('#study-video-div-' + videoId).hide();
+                } else {
+                    alert('Ошибка удаления видео из обучения.');
+                }
+            },
+            error: function () {
+                alert('Ошибка удаления видео из обучения.');
+            }
+        });
+    }
+
+}
+{{ parent() }}
+{% endblock %}

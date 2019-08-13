@@ -1,0 +1,338 @@
+{% extends "Base.twig" %}
+
+{% block title %}Сеть бьюти мастеров{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block headAdditional %}
+    {% block bufOrderHead %}
+        <link type="text/css" href="/css/bootstrap-select.min.css" rel="stylesheet"/>
+        <script type="text/javascript" src="/js/bootstrap-select.min.js"></script>
+        <script type="text/javascript" src="/js/bootstrap-select-ru.min.js"></script>
+
+        <link type="text/css" href="/css/gijgo.min.css" rel="stylesheet"/>
+        <script type="text/javascript" src="/js/gijgo.min.js"></script>
+
+        <script type="text/javascript" src="/js/messages.ru-ru.js"></script>
+        <script type="text/javascript"
+                src="https://api-maps.yandex.ru/2.1/?apikey={{ yandexGeoKey }}&lang=ru_RU"></script>
+
+        <script src="/js/jquery.inputmask.bundle.min.js"></script>
+        <script src="/js/jquery.validate.min.js"></script>
+        <script src="/js/jquery.validate.unobtrusive.min.js"></script>
+        <script src="/js/additional-methods.min.js"></script>
+    {% endblock %}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    {% block findMasterIndex %}
+        {% if isMobile == true %}
+            <style>
+                /* for bootstrap-select */
+                span.text, div.filter-option-inner-inner {
+                    font-size: 1.7em !important;
+                }
+
+                /* for datepicker */
+                td.other-month, td.current-month, td.today, div.modal-footer > button, div[role=period] {
+                    font-size: 1.7em !important;
+                }
+
+                div[role=calendar] {
+                    width: 500px;
+                }
+
+                div[role=calendar] table {
+                    width: 100%;
+                }
+            </style>
+        {% endif %}
+
+        <form id="buf-order-form" action="/main/createBufOrder" method="post" role="form" enctype="multipart/form-data">
+            <div class="{{ showRow }} mb-3">
+                <div class="{{ showCol }} pl-0" id="profile-services-container">
+                    <select id="client-services" name="client-services"
+                            class="form-control {{ controlLg }} shadow"
+                            data-live-search="true"
+                            data-val="true" data-val-required="Требуется выбрать услугу.">
+                        {% for direction in directions %}
+                            <optgroup label="{{ direction.name }}">
+                                {% for service in services %}
+                                    {% if service.direction_id == direction.id %}
+                                        {% if service.id == clientServices %}
+                                            <option value="{{ service.id }}"
+                                                    selected>{{ service.name }}</option>
+                                        {% else %}
+                                            <option value="{{ service.id }}">{{ service.name }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </optgroup>
+                        {% endfor %}
+                    </select>
+                    <span class="field-validation-valid text-danger {{ smallLg }}"
+                          data-valmsg-for="client-services"
+                          data-valmsg-replace="true"></span>
+                    <span class="small {{ smallLg }}">Если Вы не нашли нужную услугу - <a
+                                href="/main/feedBack">напишите нам</a> и мы ее добавим!</span>
+                </div>
+                <div class="{{ showCol }} pr-0">
+                    <input id="client-address-coord" type="hidden" name="client-address-coord"
+                           value="{{ clientAddressCoord }}">
+                    <input id="client-address" name="client-address"
+                           class="form-control {{ controlLg }} shadow" data-val="true"
+                           data-msg-maxlength="Длина поля ограничена - не более 300 символов"
+                           data-rule-maxlength="300"
+                           data-val-required="Требуется заполнить поле 'Адрес'."
+                           placeholder="&#xf2bc; Введите свой адрес"
+                           type="text" value="{{ clientAddress }}">
+                    <div class="pt-2">
+                           <span class="field-validation-valid text-danger {{ smallLg }}"
+                                 data-valmsg-for="client-address"
+                                 data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="{{ showRow }} my-3">
+                <div class="{{ showCol }} px-0 {{ mb4_5 }}">
+                    <div>
+                        <textarea id="order-about" name="order-about"
+                                  data-rule-maxlength="2000"
+                                  maxlength="2000" rows="4" placeholder="Опишите детали заказа"
+                                  class="form-control {{ controlLg }} shadow">{{ orderAbout }}</textarea>
+                        <span class="small {{ smallLg }}">
+                            Длина поля ограничена - не более 2000 символов
+                        </span>
+                    </div>
+                    <div class="text-right">
+                        <div class="bt-upload-btn-wrapper {{ mtMinus }}">
+                            <button class="btn bt-upload-btn {{ lbLg }}">
+                                <span class="fa fa-camera fa-lg pr-1"></span> добавить фото
+                            </button>
+                            <input type="file" class="pointer" id="order-photo-file"
+                                   name="order-photo-file" accept="image/png, image/jpeg, image/gif"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="{{ showRow }} my-3">
+                <div id="order-photo-preview" class="col mx-auto">
+                </div>
+            </div>
+
+            <div class="{{ showRow }} my-3">
+                <div class="{{ showCol }} pl-0 mb-3">
+                    <input id="order-date" name="order-date"
+                           placeholder="&#xf017; Введите дату посещения"
+                           data-val="true" data-val-required="Требуется заполнить дату посещения."
+                           type='text' class="form-control {{ controlLg }} shadow"
+                           value="{{ orderDate }}"/>
+                    <div class="pt-2">
+                                    <span class="field-validation-valid text-danger {{ smallLg }}"
+                                          data-valmsg-for="order-date"
+                                          data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+                <div class="{{ showCol }} pl-0 mb-3">
+                    <input id="order-time" name="order-time"
+                           placeholder="&#xf017; Введите время посещения"
+                           data-val="true" data-val-required="Требуется заполнить время посещения."
+                           type='text' class="form-control {{ controlLg }} shadow"
+                           value="{{ orderTime }}"/>
+                    <div class="pt-2">
+                                    <span class="field-validation-valid text-danger {{ smallLg }}"
+                                          data-valmsg-for="order-time"
+                                          data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+                <div class="{{ showCol }} pr-0">
+                    <input id="order-cost" name="order-cost"
+                           placeholder="&#xf0d6;  Цена/бюджет (руб.)"
+                           type="number" step="0.01" min="0" value="{{ orderCost }}"
+                           class="form-control {{ controlLg }} input-small shadow">
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col px-0">
+                    <div class="btn-group btn-group-toggle mb-1 pt-2" data-toggle="buttons">
+                        <label class="btn btn-outline-info {{ lbLg }} font-weight-bold min-w-150 {% if orderPlace == 'my-house' %} active {% endif %}">
+                            <input type="radio" name="order-place" value="my-house" autocomplete="off"
+                                   data-val="true"
+                                   data-val-required="Требуется выбрать место оказания услуг."
+                                    {% if orderPlace == 'my-house' %} checked {% endif %}>
+                            Выезд
+                        </label>
+                        <label class="btn btn-outline-info {{ lbLg }} font-weight-bold min-w-150 {% if orderPlace == 'master-house' %} active {% endif %}">
+                            <input type="radio" name="order-place" value="master-house" autocomplete="off"
+                                    {% if orderPlace == 'master-house' %} checked {% endif %}>
+                            У мастера
+                        </label>
+                        <label class="btn btn-outline-info {{ lbLg }} font-weight-bold min-w-150 {% if orderPlace == 'all-house' %} active {% endif %}">
+                            <input type="radio" name="order-place" value="all-house" autocomplete="off"
+                                    {% if orderPlace == 'all-house' %} checked {% endif %}>
+                            Не важно
+                        </label>
+                    </div>
+                    <br><span class="field-validation-valid {{ smallLg }} text-danger"
+                              data-valmsg-for="order-place"
+                              data-valmsg-replace="true"></span>
+                </div>
+            </div>
+
+            {% if userAuthorizedFlag != true %}
+                <div class="{{ showRow }} my-3">
+                    <div class="{{ showCol }} pl-0 mb-3">
+                        <div class="input-group">
+                            <input id="user-name" name="user-name"
+                                   class="form-control {{ controlLg }} shadow" data-val="true"
+                                   data-val-required="Требуется заполнить поле 'Имя'"
+                                   placeholder="&#xf2bd;  Имя"
+                                   type="text" value="{{ login }}">
+                        </div>
+
+                        <div class="pt-2">
+                                    <span class="field-validation-valid text-danger {{ smallLg }}"
+                                          data-valmsg-for="user-name"
+                                          data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    <div class="{{ showCol }} pr-0">
+                        <div class="input-group">
+                            <input id="phone-number" name="phone-number"
+                                   class="form-control {{ controlLg }} shadow" data-val="true"
+                                   data-val-required="Требуется заполнить поле 'Ваш телефон'"
+                                   placeholder="&#xf095; Ваш телефон" type="tel" value="{{ phone }}">
+                        </div>
+                        <div class="pt-2">
+                                    <span class="field-validation-valid text-danger {{ smallLg }}"
+                                          data-valmsg-for="phone-number"
+                                          data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row my-3 text-center">
+                    <div class="col px-0">
+                        <span class="{{ lbLg }}">Уже зарегистрированы? - </span>
+                        <a class="btn btn-brand btn-dark {{ lbLg }} mb-1 shadow"
+                           href="/auth"
+                           id="loginLink">ВОЙТИ</a>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="py-3 mx-auto text-center">
+                <input type="checkbox"
+                       class="{{ b_xl_chbx }}"
+                       id="agree-site-rules" name="agree-site-rules">
+                <label for="agree-site-rules" class="{{ lbLg_pl4_pl2 }} align-middle"
+                       style="{{ lbHeight }}">
+                    Я согласен с правилами форума
+                </label>
+            </div>
+            <br><br>
+            <input id="find-master-for-order"
+                   class="btn btn-brand btn-light-pink min-w-500 {{ lbLg }} shadow"
+                   type="submit" value="Получить предложения от мастеров"/>
+        </form>
+    {% endblock %}
+
+{% endblock %}
+
+{% block javascriptTwigComponents %}
+    {% block javascriptFindMasterIndex %}
+        <script type="text/javascript">
+            var limitUploadFileSize = {{ limitUploadFileSize }};
+
+            $('#client-services').selectpicker({
+                title: '-- Выберите услугу --',
+                size: 6
+            });
+
+            //Загрузка фото для заказа
+            $("#order-photo-file").change(function () {
+                var img = $('<img/>', {
+                    id: 'dynamic',
+                    width: 250
+                });
+
+                var file = this.files[0];
+                if (typeof file === 'undefined') {
+                    return false;
+                }
+                if (file.size !== 'undefined' && file.size > limitUploadFileSize * 1024 * 1024) {
+                    alert('Файл слишком велик (более {{ limitUploadFileSize }} Мб).');
+                    return false;
+                }
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    img.attr('src', e.target.result);
+                    var photoPreviewDiv =
+                        '<div class="pb-2">' + $(img)[0].outerHTML +
+                        '<a href="#" class="btn-order-del-photo pl-2 {{ lbLg }}" onclick="deleteOrderPhoto(this)">' +
+                        'удалить фото</a>' +
+                        '</div>';
+                    $("#order-photo-preview").append(photoPreviewDiv);
+                }
+                reader.readAsDataURL(file);
+                $(".bt-upload-btn-wrapper").hide();
+            });
+
+            function deleteOrderPhoto(hrefElement) {
+                $($(hrefElement).parent()).hide();
+                $(".bt-upload-btn-wrapper").show();
+            }
+
+            $("#order-date").inputmask("99.99.9999", {clearIncomplete: true, showMaskOnHover: true});
+            $("#order-time").inputmask("99:99", {clearIncomplete: true, showMaskOnHover: true});
+            $("#phone-number").inputmask("+7 (999) 999-99-99", {clearIncomplete: true, showMaskOnHover: true});
+
+            $('#find-master-for-order').prop('disabled', true);
+            $('#agree-site-rules').on('click', function (event) {
+                if ($(this).is(':checked')) {
+                    $('#find-master-for-order').prop('disabled', false);
+                } else {
+                    $('#find-master-for-order').prop('disabled', true);
+                }
+            });
+
+            $('#find-master-for-order').on('click', function (event) {
+                if ($('#client-address').val() !== '') {
+                    ymaps.geocode($('#client-address').val()).then(function (res) {
+                        $('#client-address-coord').val(res.geoObjects.get(0).geometry.getCoordinates().join(','));
+                        $('#buf-order-form').submit();
+                    });
+                } else {
+                    $('#buf-order-form').submit();
+                }
+
+                return false;
+            });
+
+            var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+            $('#order-date').datepicker({
+                format: 'dd.mm.yyyy',
+                footer: false,
+                locale: 'ru-ru',
+                minDate: today,
+                weekStartDay: 1,
+                uiLibrary: 'bootstrap4',
+                icons: {
+                    rightIcon: '<i class="gj-icon {{ lbLg_pt2 }}">event</i>'
+                }
+            });
+        </script>
+    {% endblock %}
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

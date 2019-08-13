@@ -1,0 +1,36 @@
+{% extends "Base.twig" %}
+
+{% block title %}Контакты{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="d-flex">
+            <div class="card card-body my-1 shadow-sm">
+                <h1 class="pb-4 border-bottom text-center">О компании</h1>
+                Мы подготовили для вас небольшой ролик о том, как устроен BeautyTime24 для исполнителей. Во время просмотра рекомендуем развернуть видео на полный экран.
+                <br><br>
+                <div class="mx-auto">
+                    <iframe width="720" height="480" class="pb-0"
+                            src="{{ youAboutCompanyUrl }}" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <br>
+                <br><nobr>Телефон техподдержки: <img src="{{ techPhoneImg }}" width="180"></nobr>
+                <br><nobr>E-mail: <img src="{{ emailInfoImg2 }}" width="180"></nobr>
+                <br>Адрес: 107553, г. Москва, ул. Большая Черкизовская.
+                <br>
+                <br>ИП Громова Анна Александровна
+                <br>ОГРНИП 317774600051286, ИНН 770370212691
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

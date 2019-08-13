@@ -1,0 +1,202 @@
+DELETE FROM service;
+DELETE FROM direction;
+ALTER TABLE direction AUTO_INCREMENT = 1;
+INSERT INTO direction(name, created_at, updated_at) VALUES ('Парикмахерские услуги', now(), now());
+INSERT INTO direction(name, created_at, updated_at) VALUES ('Ногтевой сервис', now(), now());
+INSERT INTO direction(name, created_at, updated_at) VALUES ('Наращивание ресниц', now(), now());
+INSERT INTO direction(name, created_at, updated_at) VALUES ('Эпиляция', now(), now());
+INSERT INTO direction(name, created_at, updated_at) VALUES ('Брови', now(), now());
+INSERT INTO direction(name, created_at, updated_at) VALUES ('Косметология', now(), now());
+INSERT INTO direction(name, created_at, updated_at) VALUES ('Массаж', now(), now());
+INSERT INTO direction(name, created_at, updated_at) VALUES ('Тату', now(), now());
+INSERT INTO direction(name, created_at, updated_at) VALUES ('Похудение', now(), now());
+
+
+ALTER TABLE service AUTO_INCREMENT = 1;
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Стрижка женская', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Стрижка мужская', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Окрашивание волос', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Кератиновое выпрямление', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Ботокс для волос', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Нанопластика волос ', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Наращивание волос', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Свадебная причёска', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Укладка волос', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Ламинирование волос', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Химическая завивка', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Плетение кос', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Дреды или афрокосички', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (1, 'Лечение волос', now(), now());
+
+
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (2, 'Маникюр', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (2, 'Педикюр', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (2, 'Наращивание ногтей', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (2, 'Наращивание ногтей (коррекция)', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (2, 'Снятие покрытия', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (2, 'Дизайн ногтей', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (2, 'Парафинотерапия', now(), now());
+
+
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (3, 'Наращивание ресниц', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (3, 'Снятие наращенных ресниц', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (3, 'Наращивание ресниц пучками', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (3, 'Ламинирование ресниц', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (3, 'Ботокс ресниц', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (3, 'Завивка ресниц', now(), now());
+
+
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (4, 'Шугаринг', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (4, 'Восковая эпиляция', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (4, 'Лазерная Эпиляция', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (4, 'Фотоэпиляция', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (4, 'Электроэпиляция', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (4, 'Элос Эпиляция', now(), now());
+
+
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (5, 'Архитектура или форма  бровей', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (5, 'Коррекция бровей', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (5, 'Ламинирование бровей', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (5, 'Ботокс бровей', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (5, 'Окрашивание бровей', now(), now());
+
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Чистка лица', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Массаж лица', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Уход за лицом', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Пилинг', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Лифтинг', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Мезотерапия', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Дарсонвализация', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Биоревитализация', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Инъекции', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Фотоомоложение', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Пластика', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Удаление рубцов', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Удаление деффектов', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Коллаген', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Аппаратная косметология', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Прокол ушей', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Моделирование', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Микротоки', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (6, 'Липолитики', now(), now());
+
+
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (7, 'Массаж', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (7, 'Обёртывание', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (7, 'Lpg', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (7, 'Аппаратный массаж', now(), now());
+
+
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (8, 'Татуаж', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (8, 'Микроблейдинг', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (8, 'Татуировка', now(), now());
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (8, 'Перманентный макияж', now(), now());
+
+
+INSERT INTO service(direction_id, name, created_at, updated_at) VALUES (9, 'Коррекция фигуры', now(), now());
+
+
+
+
+
+
+Парикмахерские услуги
+
+Стрижка женская
+Стрижка мужская
+Окрашивание волос
+Кератиновое выпрямление
+Ботокс для волос
+Нанопластика волос 
+Наращивание волос
+Свадебная причёска
+Укладка волос
+Ламинирование волос
+Химическая завивка
+Плетение кос
+Дреды или афрокосички
+Лечение волос
+
+
+Ногтевой сервис 
+
+Маникюр
+Педикюр
+Наращивание ногтей
+Наращивание ногтей (коррекция)
+Снятие покрытия
+Дизайн ногтей
+Парафинотерапия
+
+
+Наращивание ресниц
+
+Наращивание ресниц
+Снятие наращенных ресниц
+Наращивание ресниц пучками
+Ламинирование ресниц
+Ботокс ресниц
+Завивка ресниц
+
+
+Эпиляция
+
+Шугаринг
+Восковая эпиляция 
+Лазерная Эпиляция 
+Фотоэпиляция
+Электроэпиляция
+Элос Эпиляция
+
+
+Брови
+
+Архитектура или форма бровей
+Коррекция бровей 
+Ламинирование бровей
+Ботокс бровей
+Окрашивание бровей 
+
+
+Косметология 
+
+Чистка лица
+Массаж лица
+Уход за лицом
+Пилинг
+Лифтинг 
+Мезотерапия
+Дарсонвализация
+Биоревитализация
+Инъекции
+Фотоомоложение
+Пластика
+Удаление рубцов
+Удаление деффектов
+Коллаген
+Аппаратная косметология
+Прокол ушей
+Моделирование
+Микротоки
+Липолитики
+
+
+Массаж
+
+Массаж
+Обёртывание
+Lpg
+Аппаратный массаж
+
+
+Тату
+
+Татуаж
+Микроблейдинг
+Татуировка
+Перманентный макияж
+
+
+Похудение
+
+Коррекция фигуры

@@ -1,0 +1,125 @@
+{% extends "lk/BaseControls.twig" %}
+
+{% block title %}{{ parent() }} - редактирование профиля
+    {% if byAdmin == true %}
+        пользователя '{{ uLogin }}'
+    {% endif %}
+{% endblock %}
+{% block head %}
+    {{ parent() }}
+    {{ block('javascriptFieldValidation') }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    {% if byAdmin == true %}
+        {{ block('profileAdminMenu') }}
+    {% else %}
+        <nav class="navbar navbar-expand-sm navbar-light bg-bt-menu">
+        <ul class="navbar-nav">
+        <li class="nav-item pr-2">
+            <button class="btn btn-info {{ smallLg }}"
+                    id="menu-button-view-profile" type="button">
+                Просмотр
+            </button>
+        </li>
+        <li class="nav-item pr-2">
+            <button class="btn btn-info {{ smallLg }}"
+                    id="menu-button-notification" type="button">
+                Подписка
+            </button>
+        </li>
+        <li class="nav-item pr-2">
+            <button class="btn btn-info {{ smallLg }}"
+                    id="menu-button-portfolio" type="button">
+                Портфолио
+            </button>
+        </li>
+        {% if isMobile == true %}
+            </ul>
+            </nav>
+            <nav class="navbar navbar-expand-sm navbar-light bg-bt-menu pt-0">
+            <ul class="navbar-nav">
+        {% endif %}
+        <li class="nav-item pr-2 {{ pt2 }}">
+            <button class="btn btn-info {{ smallLg }}"
+                    id="menu-button-service-cost" type="button">
+                Цена услуг
+            </button>
+        </li>
+        </ul>
+        </nav>
+        <br>
+    {% endif %}
+
+    <form action="{% if byAdmin == true %}/lk/saveProfileByAdmin?userId={{ uId }}&userType={{ uType }}{% else %}/lk/saveProfile{% endif %}"
+          class="form-horizontal" method="post" role="form" enctype="multipart/form-data">
+        <div class="w-100">
+            {{ block('fioProfile') }}
+
+            {{ block('photoProfile') }}
+
+            {{ block('rubricator') }}
+
+            {{ block('addressProfile') }}
+
+            {{ block('profilePlace') }}
+
+            <div class="row my-3">
+                <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+                    Стаж работы (в годах):<span class="text-danger">*</span>
+                </div>
+                <div class="pl-4 col-xl-10">
+                    <input id="profile-work-experience" name="profile-work-experience"
+                           class="form-control {{ controlLg }} shadow" data-val="true"
+                           data-val-required="Требуется заполнить поле 'Стаж работы'"
+                           placeholder="&#xf19d; Ваш стаж работы (в годах)"
+                           type="number" value="{{ workExperience }}">
+                    <span class="field-validation-valid {{ smallLg }} text-danger"
+                          data-valmsg-for="profile-work-experience"
+                          data-valmsg-replace="true"></span>
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+                    Ищете работу? <span class="text-danger">*</span>
+                </div>
+                <div class="pl-4 col-xl-10">
+                    <select id="profile-is-vacancy" name="profile-is-vacancy"
+                            class="form-control {{ controlLg }} shadow"
+                            data-val="true" data-val-required="Необходимо ответить.">
+                        <option value="">-- Выберите ответ --</option>
+                        <option value="1" {% if isVacancy == true %} selected {% endif %}>Да</option>
+                        <option value="0" {% if isVacancy == false %} selected {% endif %}>Нет</option>
+                    </select>
+                    <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="profile-is-vacancy"
+                          data-valmsg-replace="true"></span>
+                </div>
+            </div>
+
+            {{ block('videoLink') }}
+
+            {{ block('about') }}
+
+            {{ block('phoneProfile') }}
+
+            {{ block('smsConfirm') }}
+        </div>
+
+        {{ block('saveProfileBtn') }}
+    </form>
+{% endblock %}
+
+{% block javascriptTwigComponents %}
+    {{ block('javascriptRubricator') }}
+    {{ block('javascriptPhotoProfile') }}
+    {{ block('javascriptAddressProfile') }}
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

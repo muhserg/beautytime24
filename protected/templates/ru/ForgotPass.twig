@@ -1,0 +1,67 @@
+{% extends "Base.twig" %}
+
+{% block title %}Забыли пароль?{% endblock %}
+{% block head %}
+    {{ parent() }}
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/jquery.validate.unobtrusive.min.js"></script>
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="{{ showRow }}">
+        <div class="{{ showColSm6 }}">
+            <section id="loginForm">
+                <div class="card card-body my-2 shadow-sm">
+                    <h4 class="pb-4 pt-2 border-bottom  {{ lbLg }} text-center">
+                        Введите адрес электронной почты.
+                    </h4>
+
+                    <form action="/auth/sendForgotPassword" class="form-horizontal" method="post" role="form">
+                        <div class="validation-summary-valid text-danger" data-valmsg-summary="true">
+                            <ul>
+                                <li style="display:none"></li>
+                            </ul>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12">
+                                <div class="input-group">
+                                    <input id="email" name="email" type="text"
+                                           class="form-control {{ controlLg }} text-center shadow"
+                                           data-val-email="Поле 'E-mail' заполнено некорректно"
+                                           placeholder="&#xf2bb;  Ваш E-mail" data-val="true"
+                                           data-val-required="Требуется поле 'email'."/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col-lg-6 offset-lg-3 col-md-10 text-center offset-md-1 col-sm-12">
+                                <button type="submit"
+                                        class="btn btn-pink btn-brand {{ lbLg }} font-weight-bold shadow">
+                                    Ok
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </section>
+        </div>
+        <div class="{{ showColSm6 }} my-3">
+            <h5 class="mt-5 text-center {{ lbLg }}  px-5">Если у Вас нет аккаунта, то Вы можете зарегистрироваться</h5>
+            <div class="text-center mb-4">
+                <a class="btn btn-light btn-brand shadow {{ lbLg }} font-weight-bold"
+                   href="/auth/register">
+                    Зарегистрироваться
+                </a>
+            </div>
+        </div>
+    </div>
+    <br>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

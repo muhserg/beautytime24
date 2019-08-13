@@ -1,0 +1,26 @@
+правила переноса на новый хостинг
+
+
+0,5) Сделать бэкап MySQL через phpMyAdmin и сделать бэкап папки /img
+
+1) настроить SSL на новом хостинге
+
+2) перенести бэкап базы MySQL
+
+2,5) поменять название БД в db.local.php
+
+3) git pull master с github
+
+3,5) перенастроить php на 5.4
+
+4) скопировать фото из папки /img на новый хостинг
+
+5) настроить Cron
+0 0 * * *	/usr/bin/php /home/u499950545/public_html/protected/cron/clear_statistics.php
+*/10 * * * *	/usr/bin/php /home/u499950545/public_html/protected/cron/SendOrderSms.php
+
+6) создать почтовые адреса info@beautytime24.ru, pr@beautytime24.ru, admin@beautytime24.ru.
+
+7) Сделать перенаправление pr@beautytime24.ru, admin@beautytime24.ru на info@beautytime24.ru,
+а с info@beautytime24.ru на muh.maza@gmail.com и 89265965350@mail.ru
+

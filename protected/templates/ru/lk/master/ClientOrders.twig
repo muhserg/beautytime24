@@ -1,0 +1,41 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - заказы клиентов{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    {% if profileIsComplete != true %}
+        <h4 class="{{ smallLg }} btn-outline-danger">
+            Недостаточно заполнен профиль. Введите <a href="/lk/profile#services">услуги</a>.
+        </h4>
+    {% else %}
+        <div class="justify-content-center w-100 {{ isMaxW500 }}  pl-3">
+            <h4 class="{{ lbLg }}">Заказы клиентов</h4>
+            {% if createdOrders|length == 0 %}
+                <span class="{{ smallLg }}">
+                    Заказов пока нет.
+                    <br>Можете посмотреть свои <a href="/lk/myOrders">заказы</a>.
+                </span>
+            {% else %}
+                {% for order in createdOrders %}
+                    {{ block('orderPanel') }}
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascript %}
+//обновление страницы по таймеру
+var timerPageRefresh = setTimeout(function () {
+    window.location.reload();
+}, {{ pageRefreshTime }});
+
+{{ parent() }}
+{% endblock %}

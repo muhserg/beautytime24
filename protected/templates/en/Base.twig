@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+<head>
+    {% block head %}
+        <meta charset="utf-8">
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+        <link rel="stylesheet" href="/css/bootstrap.css"/>
+        <link rel="stylesheet" href="/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/css/main.css">
+
+        <script type="text/javascript" src="/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="/js/bootstrap.js"></script>
+        <title>{% block title %}{% endblock %}</title>
+    {% endblock %}
+</head>
+<body>
+{% block navbar %}
+    <nav class="navbar navbar-expand-md bg-light navbar-light py-0">
+        <a class="navbar-brand mr-1" href="/">
+            <img src="/img/logo.jpg" alt="logo"/>
+        </a>
+        <div class="navbar-brand">
+            <div class="logofont text-sm-left text-center">BeautyTime</div>
+        </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a href="/info/map" data-toggle="tooltip" title="Find your master and salon"
+                       class="nav-link btn btn-light shadow mx-1 mb-1" style="min-width: 90px;">
+                        <i class="fa">&#xf279;</i>&nbsp;Map
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/info/contacts" data-toggle="tooltip" title="Site info"
+                       class="nav-link btn btn-light shadow mx-1 mb-1" style="min-width: 90px;">
+                        <i class="fa">&#xf05a;</i>&nbsp;About
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/info/faq" data-toggle="tooltip" title="FAQ"
+                       class="nav-link btn btn-light shadow mx-1" style="min-width: 90px;">
+                        <i class="fa">&#xf29c;</i>&nbsp;FAQ
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-item mb-2 mt-2">
+                <div class="d-flex justify-content-around">
+                    <a href="/lang/change" class="p-1 pr-3">
+                        <img src="/img/{{ lang }}.png" alt="change language" title="change language">
+                    </a>
+                    {% if userAuthorizedFlag == true %}
+                        <a class="btn btn-light font-weight-bold shadow mb-1" href="/auth/logout" id="loginLink"
+                           style="border-radius: 15px; font-size: smaller;">Logout</a>
+                    {% else %}
+                        <a class="btn btn-light font-weight-bold shadow mr-1 mb-1" href="/auth/register"
+                           id="registerLink" style="border-radius: 15px; font-size: smaller;">Registration</a>
+                        <a class="btn btn-light font-weight-bold shadow mb-1" href="/" id="loginLink"
+                           style="border-radius: 15px; font-size: smaller;">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="ScrollTop btn btn-light">
+        <i style="font-size:24px" class="fa">&#xf102;</i>
+    </div>
+{% endblock %}
+
+<div id="content">
+    <div class="container-fluid body-content px-0">
+        <div class="container-fluid">
+            {% block logoRow %}
+                <div id="LogoRow">
+                    <div class="d-flex justify-content-lg-around justify-content-center">
+                        <div class="flex-fill text-center md-hide align-self-center">
+                            <div>
+                                <div class="text-secondary text-center mr-3">Any master in one click :)</div>
+                                <div>Masters: <b class="text-nowrap">100</b></div>
+                                <div>Clients: <b class="text-nowrap">1000</b></div>
+                            </div>
+                        </div>
+
+                        <div class="flex-fill text-center align-self-center">
+                            <img src="/img/logopic.jpg" class="img-fluid"/>
+                        </div>
+                    </div>
+                    <hr class="mt-0"/>
+                </div>
+            {% endblock %}
+
+            <div id='error-text' class="text-danger">
+                {{ errorText | raw }}
+            </div>
+            {% block content %}
+            {% endblock %}
+            <hr/>
+        </div>
+    </div>
+</div>
+
+{% block footer %}
+    <div class="container">
+        <footer class="text-center mb-3">
+            <p>&copy; 2019 – BeautyTime</p>
+            <div class="row">
+                <div class="col-12 align-self-center">
+                    <div class="row text-secondary text-center">
+                        <small class="col-12 mb-3">
+                            Подпишись на нас в соц.сетях
+                        </small>
+                    </div>
+                    <div class="row">
+                        <div class="col px-0">
+                            <a class="btn color-pink shadow" href="http://vk.com/">
+                                <i style="font-size:34px" class="fa">&#xf189;</i>
+                            </a>
+                        </div>
+                        <div class="col px-0">
+                            <a class="btn color-pink shadow" href="http://ok.ru/">
+                                <i style="font-size:34px" class="fa">&#xf16d;</i>
+                            </a>
+                        </div>
+                        <div class="col px-0">
+                            <a class="btn color-pink shadow" href="http://facebook.com/">
+                                <i style="font-size:34px" class="fa">&#xf082;</i>
+                            </a>
+                        </div>
+                        <div class="col px-0">
+                            <a class="btn color-pink shadow" href="http://youtube.com/">
+                                <i style="font-size:34px" class="fa">&#xf167;</i>
+                            </a>
+                        </div>
+                        <div class="col px-0">
+                            <a class="btn color-pink shadow" href="http://twitter.com/">
+                                <i style="font-size:34px" class="fa">&#xf099;</i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <div style="height: 90px;"></div>
+    </div>
+{% endblock %}
+
+<script type="text/javascript">
+    {% block javascript %}
+    {% endblock %}
+</script>
+</body>
+</html>

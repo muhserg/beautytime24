@@ -1,0 +1,20 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - переписка с пользователем {{ message.toFio }}{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100">
+        {{ block('messagesList') }}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+{% endblock %}

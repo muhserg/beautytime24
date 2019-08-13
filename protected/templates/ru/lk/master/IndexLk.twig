@@ -1,0 +1,39 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}Станьте мастером {{ siteNameRus }}!{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100 pl-4">
+        <ul class="pl-0">
+            <li>
+                Выбирайте заказы в удобное время
+            </li>
+            <li>
+                Экономьте на рекламе
+            </li>
+            <li>
+                Оставляйте предложения своих услуг совершенно бесплатно
+            </li>
+            <li>
+                Обсуждайте детали заказа с заказчиком услуг по телефону или в чате
+            </li>
+            <li>
+                Собирайте отзывы и повышайте рейтинг
+            </li>
+            <li>
+                Зарабатывайте вместе с {{ siteNameRus }} и пополняйте свою клиентскую базу
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+{% endblock %}

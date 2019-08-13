@@ -1,0 +1,88 @@
+{% extends "Base.twig" %}
+
+{% block title %}Authorization{% endblock %}
+{% block head %}
+    {{ parent() }}
+    <script src="/js/jquery.inputmask.bundle.min.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/jquery.validate.unobtrusive.min.js"></script>
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-6">
+            <section id="loginForm">
+                <div class="card card-body my-2 shadow">
+                    <h4 class="pb-4 pt-2 border-bottom text-center">Authorization</h4>
+
+                    <form action="/auth/login" class="form-horizontal" method="post" role="form">
+                        <div class="validation-summary-valid text-danger" data-valmsg-summary="true">
+                            <ul>
+                                <li style="display:none"></li>
+                            </ul>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12">
+                                <div class="input-group">
+                                    <input id="phone-number" name="phone-number" type="text" value="{{ phone }}"
+                                           class="form-control text-center shadow" placeholder="&#xf095;  Your phone"
+                                           data-val="true" data-val-required="Требуется поле 'Номер телефона'."/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12">
+                                <div class="input-group">
+                                    <input id="password" name="password" type="password"
+                                           class="form-control text-center shadow" placeholder="&#xf023;  Password"
+                                           data-val="true" data-val-required="Требуется поле 'Пароль'." value=""/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12">
+                                <div class="custom-control custom-checkbox align-self-center">
+                                    <input class="custom-control-input" data-val="true"
+                                           data-val-required="The Запомнить меня field is required." id="RememberMe"
+                                           name="remember-me" type="checkbox" value="true"/>
+                                    <input name="remember-me" type="hidden" value="false"/>
+                                    <label class="custom-control-label" for="remember-me">Remember me</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12">
+                                <button type="submit" class="btn btn-pink btn-brand font-weight-bold shadow"
+                                        style="width: 100%;">Login
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </section>
+        </div>
+        <div class="col-sm-6 my-3">
+            <h5 class="text-center mt-4 px-5">Если забыли пароль, то его можно восстановить</h5>
+            <div class="text-center mb-5">
+                <a class="btn btn-light btn-brand shadow font-weight-bold" href="/auth/forgotPassword">Забыли
+                    пароль?</a>
+            </div>
+
+            <h5 class="text-center mt-5 px-5">Если у Вас нет аккаунта, то Вы можете зарегистрироваться</h5>
+            <div class="text-center mb-4">
+                <a class="btn btn-light btn-brand shadow font-weight-bold" href="/auth/register">Зарегистрироваться</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    $(document).ready(function () {
+        $("#phone-number").inputmask("+7 (999) 999-99-99", {clearIncomplete: true, showMaskOnHover: true});
+    });
+{% endblock %}

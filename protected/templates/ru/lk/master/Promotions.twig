@@ -1,0 +1,42 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - мои акции{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-bt-menu">
+        <ul class="navbar-nav">
+            <li class="nav-item pr-2">
+                <button class="btn btn-info {{ smallLg }}"
+                        id="menu-button-create-promotion" type="button">
+                    Создать акцию
+                </button>
+            </li>
+        </ul>
+    </nav>
+    <br>
+
+    <div class="justify-content-center w-100">
+        {{ block('promotionsList') }}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+var routingPromotion = {
+    'menu-button-create-promotion': '/lk/createPromotionPage',
+};
+
+for (var btnId in routingPromotion) {
+    $('#' + btnId).on('click', function (event) {
+        window.location = routingPromotion[this.id];
+    });
+}
+
+{{ parent() }}
+{% endblock %}

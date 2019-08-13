@@ -1,0 +1,34 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block head %}
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block baseContent %}
+    {% if masters|length == 0 %}
+        <h4 class="{{ lbLg }}">
+            Мастера не найдены.
+        </h4>
+    {% else %}
+        {% for master in masters %}
+            {{ block('masterPanel') }}
+        {% endfor %}
+    {% endif %}
+    {{ block('jsMasterPanel') }}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block javascript %}
+    $('.btn-agree-order-div').show();
+
+    $('.btn-agree-order-div button').on('click', function () {
+        window.location = '/lk/createOrderPage?masterId=' + $(this).attr('master-id');
+    });
+{% endblock %}
+
+{% block yandexMetrika %}
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "lk/BaseControls.twig" %}
+
+{% block title %}{{ parent() }} - создать акцию{% endblock %}
+{% block head %}
+    {{ parent() }}
+    <link type="text/css" href="/css/gijgo.min.css" rel="stylesheet"/>
+    <script type="text/javascript" src="/js/gijgo.min.js"></script>
+    <script type="text/javascript" src="/js/messages.ru-ru.js"></script>
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <form id="promotion-form" action="/lk/savePromotion" class="form-horizontal" method="post" role="form"
+          enctype="multipart/form-data">
+        <div class="justify-content-center container-fluid">
+            <div class="row my-3">
+                <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+                    Заголовок акции<span class="text-danger">*</span>:
+                </div>
+                <div class="pl-4 col-xl-10">
+                    <input id="promotion-title" name="promotion-title"
+                           placeholder="&#xf031; Введите название акции"
+                           data-val="true" data-val-required="Требуется название акции."
+                           type='text' class="form-control {{ controlLg }} mb-2 shadow" value="{{ title }}"/>
+                    <span class="field-validation-valid {{ smallLg }} text-danger"
+                          data-valmsg-for="promotion-title"
+                          data-valmsg-replace="true"></span>
+                </div>
+            </div>
+
+            {{ block('about') }}
+
+            <div class="row my-3">
+                <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+                    Начало акции<span class="text-danger">*</span>:
+                </div>
+                <div class="pl-4 col-xl-10">
+                    <input id="promotion-date-begin" name="promotion-date-begin"
+                           placeholder="&#xf017; Введите дату начала акции"
+                           data-val="true" data-val-required="Требуется заполнить дату начала акции."
+                           type='text' class="form-control {{ controlLg }} mb-2 shadow" value="{{ dateBegin }}"/>
+                    <span class="field-validation-valid {{ smallLg }} text-danger"
+                          data-valmsg-for="promotion-date-begin"
+                          data-valmsg-replace="true"></span>
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+                    Окончание акции:
+                </div>
+                <div class="pl-4 col-xl-10">
+                    <input id="promotion-date-end" name="promotion-date-end"
+                           placeholder="&#xf017; Введите дату окончания акции"
+                           type='text' class="form-control {{ controlLg }} mb-1 shadow" value="{{ dateEnd }}"/>
+                    <span class="small {{ smallLg }}">Пустое поле означает неограниченную по срокам акцию.</span>
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+                    Скидка по акции<br>(в процентах):
+                </div>
+                <div class="pl-4 col-xl-10">
+                    <input id="promotion-discount" name="promotion-discount"
+                           placeholder="&#xf295; Введите скидку"
+                           min="0" max="100"
+                           data-val-range-min="0" data-val-max="100"
+                           data-val="true" data-val-range="Скидка должна быть больше нуля."
+                           type='number' class="form-control {{ controlLg }} mb-1 shadow" value="{{ discount }}"/>
+                    <span class="field-validation-valid {{ smallLg }} text-danger"
+                          data-valmsg-for="promotion-discount"
+                          data-valmsg-replace="true"></span>
+                </div>
+            </div>
+
+            {{ block('photoProfile') }}
+
+            {{ block('addressProfile') }}
+
+            {{ block('saveProfileBtn') }}
+        </div>
+    </form>
+{% endblock %}
+
+
+{% block javascriptTwigComponents %}
+    {{ block('javascriptFieldValidation') }}
+    {{ block('javascriptPhotoProfile') }}
+    {{ block('javascriptAddressProfile') }}
+{% endblock %}
+
+{% block javascript %}
+$('#promotion-date-begin').datepicker({
+    format: 'dd.mm.yyyy',
+    footer: false,
+    locale: 'ru-ru',
+    weekStartDay: 1,
+    uiLibrary: 'bootstrap4',
+    icons: {
+        rightIcon: '<i class="gj-icon {{ lbLg_pt2 }}">event</i>'
+    }
+});
+
+$('#promotion-date-end').datepicker({
+    format: 'dd.mm.yyyy',
+    footer: false,
+    locale: 'ru-ru',
+    weekStartDay: 1,
+    uiLibrary: 'bootstrap4',
+    icons: {
+        rightIcon: '<i class="gj-icon {{ lbLg_pt2 }}">event</i>'
+    }
+});
+
+{{ parent() }}
+{% endblock %}

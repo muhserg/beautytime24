@@ -1,0 +1,81 @@
+{% extends "Base.twig" %}
+
+{% block title %}Список заказов
+    {% if orderOfSalon == true %}
+        от салонов
+    {% endif %}
+{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid pt-2">
+        <h1 class="pb-2 border-bottom text-center">{{ block('title') }}</h1>
+    </div>
+
+    <div class="container-fluid">
+        <table class="w-100">
+            <tr class="btn-primary">
+                {% for orderColumn in orderRusColumns %}
+                    <th class="text-center">
+                        {{ orderColumn }}
+                    </th>
+                {% endfor %}
+            </tr>
+            {% for order in orders %}
+                <tr class="btn-light text-center">
+                    {% for columnName, columnValue in order %}
+                        {% for orderColumn in orderEngColumns %}
+                            {% if columnName == orderColumn %}
+                                <td>
+                                    {% if columnName == 'ownerUser' %}
+                                        {{ columnValue['login'] }}
+                                    {% elseif columnName == 'agreeMasterIds' %}
+                                        {{ columnValue|default('нет') }}
+                                    {% elseif columnName == 'agreeSalonIds' %}
+                                        {{ columnValue|default('нет') }}
+                                    {% elseif columnName == 'master' %}
+                                        {{ columnValue['lastName']|default('отсутствует') }}
+                                    {% elseif columnName == 'salon' %}
+                                        {{ columnValue['name']|default('отсутствует') }}
+                                    {% else %}
+                                        {{ columnValue|default('отсутствует') }}
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <br><br>
+{% endblock %}
+
+{% block javascript %}
+function confirmPhone(userId) {
+    $.ajax({
+        url: '/bcvm/confirmPhone',
+        dataType: "json",
+        type: "POST",
+        data: {
+            'user-id': userId
+        },
+        success: function (data) {
+            if (data && (data.error === false)) {
+                $('#btn-confirm-phone-' + data.tech_message).html('Подтвержден');
+            } else {
+                alert('Ошибка подтверждения телефона.');
+            }
+        },
+        error: function () {
+            alert('Ошибка подтвержденя телефона.');
+        }
+    });
+}
+{% endblock %}

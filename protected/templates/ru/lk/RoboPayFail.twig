@@ -1,0 +1,26 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }} - ошибка
+    {% if isTest == 1 %}
+        (тестовый режим)
+    {% endif %}
+{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center {{ lbLg }} w-100 pl-3">
+        Не удалось пополнить баланс.
+        <br>Попробуйте <a href="/lk/roboPay">еще раз</a>.
+    </div>
+{% endblock %}
+
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

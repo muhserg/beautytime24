@@ -1,0 +1,1210 @@
+{% extends "lk/BaseLk.twig" %}
+
+{% block title %}{{ parent() }}{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascriptTimePicker %}
+    <link type="text/css" href="/css/bootstrap-timepicker.min.css"/>
+    <script type="text/javascript" src="/js/bootstrap-timepicker.min.js"></script>
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block fioProfile %}
+    <div class="row my-3">
+        <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+            <nobr>Фамилия{% if userIsSalon == true %} директора{% endif %}:<span
+                        class="text-danger">*</span></nobr>
+        </div>
+        <div class="pl-4 col-xl-10">
+            <input id="profile-last-name" name="profile-last-name"
+                   class="form-control {{ controlLg }} mb-2 shadow" data-val="true"
+                   data-val-required="Требуется заполнить поле 'Фамилия'."
+                   data-msg-maxlength="Длина поля ограничена - не более 100 символов"
+                   data-rule-maxlength="100"
+                   placeholder="&#xf2bd;  Укажите фамилию"
+                   type="text" value="{{ lastName }}">
+            <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="profile-last-name"
+                  data-valmsg-replace="true"></span>
+        </div>
+    </div>
+    <div class="row my-3">
+        <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+            Имя{% if userIsSalon == true %} директора{% endif %}:<span
+                    class="text-danger">*</span>
+        </div>
+        <div class="pl-4 col-xl-10">
+            <input id="profile-first-name" name="profile-first-name"
+                   class="form-control {{ controlLg }} mb-2 shadow" data-val="true"
+                   data-val-required="Требуется заполнить поле 'Имя'."
+                   data-msg-maxlength="Длина поля ограничена - не более 100 символов"
+                   data-rule-maxlength="100"
+                   placeholder="&#xf2bd;  Введите имя"
+                   type="text" value="{{ firstName }}">
+            <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="profile-first-name"
+                  data-valmsg-replace="true"></span>
+        </div>
+    </div>
+    <!--<div class="row my-3">
+        <div class="col-sm-2 pt-1 text-right px-0">
+            <nobr>Отчество{% if (userIsClient != true and userIsMaster != true) %} директора{% endif %}:</nobr>
+        </div>
+        <div class="pl-4 col-xl-10">
+            <input id="profile-middle-name" name="profile-middle-name"
+                   class="form-control {{ controlLg }} shadow" data-val="true"
+                   data-msg-maxlength="Длина поля ограничена - не более 100 символов"
+                   data-rule-maxlength="100"
+                   placeholder="&#xf2bd;  Введите отчество (необязательно)"
+                   type="text" value="{{ middleName }}">
+        </div>
+    </div>-->
+{% endblock %}
+
+
+{% block rubricator %}
+    <div class="row my-3">
+        <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+            Область деятельности:
+        </div>
+        <div class="pl-4 col-xl-10">
+            <a name="directions"></a>
+            <select id="profile-directions" name="profile-directions[]" multiple='multiple'
+                    class="form-control {{ controlLg }} shadow">
+                {% for profileDirection in profileDirections %}
+                    <option value="{{ profileDirection.id }}" {{ profileDirection.selected }}>{{ profileDirection.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="row my-3">
+        <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+            Список оказываемых услуг:
+        </div>
+        <div class="pl-4 col-xl-10">
+            <a name="services"></a>
+            <div id="profile-services-container">
+                <select id="profile-services" name="profile-services[]"
+                        class="{{ controlLg }} shadow" multiple>
+                    {% for profileService in profileServices %}
+                        {% if profileService.selectedInDirection == 'selected' %}
+                            <option value="{{ profileService.id }}" {{ profileService.selected }}>{{ profileService.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <span class="small {{ smallLg }}">Если Вы не нашли нужную услугу -
+                <a href="/main/feedBack">напишите нам</a> и мы ее добавим!</span>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block photoProfile %}
+    <div class="row my-3">
+        <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+            {% if photoLabel is not empty %}
+                {{ photoLabel|raw }}
+            {% else %}
+                {% if userIsClient == true or userIsMaster == true %}
+                    Ваше фото (аватар):
+                {% else %}
+                    Логотип компании:
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="pl-4 col-xl-10">
+            {% if avatarUrl != null %}
+                <div class="pb-2 mx-auto">
+                    <img src="{{ avatarUrl }}" class="w-50 master-short-data">
+                    <br><span class="small {{ smallLg }}">Для изменения фото используйте кнопку "Загрузить".</span>
+                </div>
+            {% endif %}
+            {% block photoProfileUpload %}
+                <div class="input-group image-preview mb-1">
+                    <input type="text" class="form-control {{ controlLg }} image-preview-filename" disabled="disabled">
+                    <!-- don't give a name === doesn't send on POST/GET -->
+                    <span class="input-group-btn pl-1">
+                        <!-- image-preview-clear button -->
+                        <button type="button" class="btn btn-default {{ lbLg_pt2 }}image-preview-clear"
+                                style="display:none;">
+                            <span class="glyphicon glyphicon-remove"></span>Очистить
+                        </button>
+                        <!-- image-preview-input -->
+                        <div class="btn btn-pink image-preview-input {{ pb07em }}">
+                            <span class="glyphicon glyphicon-folder-open"></span>
+                            <span class="image-preview-input-title {{ lbLg }}">Загрузить</span>
+                            <input id="profile-user-photo" name="profile-user-photo"
+                                    {% if isRequiredUploadPhoto == true %}
+                                        data-val="true" class="{{ smallLg }} "
+                                        data-val-required="Требуется загрузить фото."
+                                    {% endif %}
+                                   type="file" accept="image/png, image/jpeg, image/gif"/>
+                        </div>
+                    </span>
+                </div>
+                {% if isRequiredUploadPhoto == true %}
+                    <span class="field-validation-valid {{ smallLg }} text-danger"
+                          data-valmsg-for="profile-user-photo"
+                          data-valmsg-replace="true"></span>
+                {% endif %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block addressProfile %}
+    <div class="row my-3">
+        <a name="address"></a>
+        <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+            Адрес (введите город и улицу):<span class="text-danger">*</span>
+        </div>
+        <div class="pl-4 col-xl-10">
+            <input id="profile-address-coord" name="profile-address-coord" type="hidden" value="{{ addressCoord }}">
+            <input id="profile-address" name="profile-address"
+                   class="form-control {{ controlLg }} shadow" data-val="true"
+                   data-msg-maxlength="Длина поля ограничена - не более 300 символов"
+                   data-rule-maxlength="300"
+                   data-val-required="Требуется заполнить поле 'Адрес'."
+                   placeholder="&#xf2bc;  Введите адрес или укажите на карте"
+                   type="text" value="{{ address }}">
+            <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="profile-address"
+                  data-valmsg-replace="true"></span>
+            <span class="small {{ smallLg }}">Для изменения адреса используйте карту.</span>
+        </div>
+    </div>
+    <div class="row my-3">
+        <div class="{{ lbProfile }} pt-1 {{ smallLg }}"></div>
+        <div class="pl-4 col-xl-10">
+            <div id="map" class="yandex-map mx-auto"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block smsConfirm %}
+    <div class="row my-3">
+        <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+            Получение СМС:
+        </div>
+        <div class="pl-4 {{ pt2 }} {{ col_xl_10 }}">
+            <input type="checkbox" name="sms-confirm"
+                   class="{{ b_xl_chbx }}" {% if smsConfirm == true %} checked {% endif %}
+                   id="agree-site-rules" name="agree-site-rules">
+            <label for="agree-site-rules" class="{{ smallLg }} {{ pl2_pl4 }} align-middle"
+                   style="{{ lbHeight }}">
+                Я согласен получать SMS по заказам от данного сайта
+            </label>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block videoLink %}
+    <div class="row my-3">
+        <div class="{{ lbProfile }} pt-1  {{ smallLg }} ">
+            Ссылка на Ваше видео или канал в Youtube:
+        </div>
+        <div class="pl-4 col-xl-10">
+            {% if youtubeUrlEmbed == true %}
+                <div class="py-3 h-500 video-container mx-auto text-center">
+                    <iframe width="160" height="120" class="p-1"
+                            src="{{ youtubeUrl }}" frameborder="0" allowfullscreen></iframe>
+                </div>
+            {% endif %}
+            <input id="profile-video-link" name="profile-video-link"
+                   class="form-control  {{ controlLg }} shadow" data-val="true"
+                   data-msg-maxlength="Длина поля ограничена - не более 200 символов"
+                   data-rule-maxlength="200"
+                   placeholder="&#xf16a;  Укажите ссылку на Youtube"
+                   type="text" value="{{ youtubeUrl }}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block about %}
+    <div class="row my-3">
+        <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+            {% if aboutLabel is not empty %}
+                {{ aboutLabel|raw }}
+            {% else %}
+                {% if (userIsClient == true or userIsMaster == true) %}
+                    О себе:
+                {% else %}
+                    О компании:
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="pl-4 col-xl-10">
+            <textarea id="profile-about" name="profile-about"
+                      maxlength="2000" rows="7" placeholder="Дополнительная информация"
+                      {% if aboutLabel is not empty %}
+                          data-val="true" data-val-required="Требуется дополнительная информация."
+                      {% endif %}
+                      class="form-control {{ controlLg }} shadow">{{ about }}</textarea>
+            <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="profile-about"
+                  data-valmsg-replace="true"></span>
+            <span class="small {{ smallLg }}">Длина поля ограничена - не более 2000 символов.</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block timePicker %}
+    <div class="row my-0 pb-4">
+        <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+            От:<span class="text-danger">*</span>
+        </div>
+        <div class="pl-4 col-xl-10">
+            <div id="div-tp-begin" class="input-group mb-3 bootstrap-timepicker timepicker">
+                <input id="profile-timepicker-begin" name="profile-timepicker-begin" type="text"
+                       data-val="true" data-val-required="Требуется заполнить время."
+                       class="form-control {{ controlLg }} input-small shadow" value="{{ timeBegin }}">
+                <div class="input-group-append">
+                    <span id="span-tp-begin" class="input-group-text" style="cursor:pointer">
+                        <i class="fa fa-clock-o fa-lg"></i>
+                    </span>
+                </div>
+            </div>
+            <span class="field-validation-valid {{ smallLg }} text-danger"
+                  data-valmsg-for="profile-timepicker-begin"
+                  data-valmsg-replace="true"></span>
+        </div>
+    </div>
+    <div class="row my-0 pb-4">
+        <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+            До:<span class="text-danger">*</span>
+        </div>
+        <div class="pl-4 col-xl-10">
+            <div id="div-tp-end" class="input-group mb-3 bootstrap-timepicker timepicker">
+                <input id="profile-timepicker-end" name="profile-timepicker-end" type="text"
+                       data-val="true" data-val-required="Требуется заполнить время."
+                       class="form-control {{ controlLg }} input-small shadow" value="{{ timeEnd }}">
+                <div class="input-group-append">
+                    <span id="span-tp-end" class="input-group-text" style="cursor:pointer">
+                        <i class="fa fa-clock-o fa-lg"></i>
+                    </span>
+                </div>
+            </div>
+            <span class="field-validation-valid {{ smallLg }} text-danger"
+                  data-valmsg-for="profile-timepicker-end"
+                  data-valmsg-replace="true"></span>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var tpInputBegin = $('#profile-timepicker-begin');
+            tpInputBegin.timepicker({
+                maxHours: 24,
+                template: 'dropdown',
+                disableFocus: true,
+                appendWidgetTo: '#div-tp-begin',
+                showMeridian: false,
+            });
+            tpInputBegin.timepicker('setTime', '{{ timeBegin }}');
+            $('#profile-timepicker-begin, #span-tp-begin').on('click', function (event) {
+                var timeDropDownB = $('#div-tp-begin > .bootstrap-timepicker-widget');
+                if (timeDropDownB.is(':visible') === true) {
+                    tpInputBegin.timepicker("hideWidget");
+                    timeDropDownB.hide();
+                } else {
+                    tpInputBegin.timepicker("showWidget");
+                    timeDropDownB.show();
+                    $('#div-tp-begin .bootstrap-timepicker-hour').focus();
+                }
+            });
+
+            var tpInputEnd = $('#profile-timepicker-end');
+            tpInputEnd.timepicker({
+                maxHours: 24,
+                template: 'dropdown',
+                disableFocus: true,
+                appendWidgetTo: '#div-tp-end',
+                showMeridian: false
+            });
+            tpInputEnd.timepicker('setTime', '{{ timeEnd }}');
+            $('#profile-timepicker-end, #span-tp-end').on('click', function (event) {
+                var timeDropDownE = $('#div-tp-end > .bootstrap-timepicker-widget');
+                if (timeDropDownE.is(':visible') === true) {
+                    tpInputEnd.timepicker("hideWidget");
+                    timeDropDownE.hide();
+                } else {
+                    tpInputEnd.timepicker("showWidget");
+                    timeDropDownE.show();
+                    $('#div-tp-end .bootstrap-timepicker-hour').focus();
+                }
+            });
+
+            $('form').on('keyup keypress', function (e) {
+                var keyCode = e.keyCode || e.which;
+                if (keyCode === 13) {
+                    if ($('#multi-select-container-schedule-weekday').length > 0) {
+                        $('#multi-select-container-schedule-weekday').removeClass('multi-select-container--open');
+                    }
+
+                    tpInputBegin.timepicker("hideWidget");
+                    tpInputEnd.timepicker("hideWidget");
+                    $('#div-tp-begin > .bootstrap-timepicker-widget').hide();
+                    $('#div-tp-end > .bootstrap-timepicker-widget').hide();
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block phoneProfile %}
+    <div class="row my-0 pb-4">
+        <div class="{{ lbProfile }} pt-1 {{ smallLg }}">
+            Телефон:<span class="text-danger">*</span>
+        </div>
+        <div class="pl-4 col-xl-10">
+            <div id="div-tp-begin" class="mb-3">
+                <input id="profile-phone" name="profile-phone" type="text"
+                       placeholder="&#xf095; Ваш телефон"
+                       data-val="true" data-val-required="Требуется указать телефон."
+                       value="{{ phone }}"
+                       class="form-control {{ controlLg }} input-small shadow">
+            </div>
+            <span class="field-validation-valid {{ smallLg }} text-danger"
+                  data-valmsg-for="profile-phone"
+                  data-valmsg-replace="true"></span>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $("#profile-phone").inputmask("+7 (999) 999-99-99", {clearIncomplete: true, showMaskOnHover: true});
+    </script>
+{% endblock %}
+
+{% block saveProfileBtn %}
+    <div class="row mb-5 mt-2">
+        <div class="mx-auto w-50 min-w-200">
+            <input id="profile-button-save" type="submit"
+                   class="btn btn-pink font-weight-bold {{ lbLg }} bt-button-save shadow"
+                   value="Сохранить"/>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block contentFindMaster %}
+    <div class="{{ isMaxW500 }}">
+        <form id="find-master-form" action="/" method="post" role="form">
+            <div class="pt-2">
+                <select id="find-directions" name="find-directions"
+                        class="form-control {{ controlLg }} mb-1 shadow"
+                        data-val="true" data-val-required="Требуется выбрать направление.">
+                    <option value="">-- Выберите направление --</option>
+                    {% for direction in directions %}
+                        <option value="{{ direction.id }}">{{ direction.name }}</option>
+                    {% endfor %}
+                </select>
+                <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="find-directions"
+                      data-valmsg-replace="true"></span>
+            </div>
+
+            <div class="pt-2">
+                <select id="find-work-experience" name="find-work-experience"
+                        class="form-control {{ controlLg }} shadow">
+                    <option value="">-- Стаж работы --</option>
+                    <option value="oneYear">до 1 года</option>
+                    <option value="threeYear">до 3х лет</option>
+                    <option value="manyYear">свыше 3х лет</option>
+                </select>
+            </div>
+
+            <div class="pt-2">
+                <select id="find-address-type" name="find-address-type"
+                        class="form-control {{ controlLg }} mb-1 shadow"
+                        data-val="true" data-val-required="Требуется выбрать местоположение.">
+                    <option value="">-- Выбрать местоположение мастера --</option>
+                    <option value="map">на карте</option>
+                    <option value="subway">по станции метро</option>
+                </select>
+                <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="find-address-type"
+                      data-valmsg-replace="true"></span>
+            </div>
+
+            <div id="find-address-type-map" class="pt-2" style="display: none;">
+                {{ block('addressProfile') }}
+            </div>
+            <div id="find-address-type-subway" class="pt-2" style="display: none;">
+                <select id="address-type-subway" name="address-type-subway"
+                        class="find-address-type-group form-control {{ controlLg }} mb-1 shadow"
+                        data-val="true" data-val-required="Требуется выбрать местоположение.">
+                    <option value="">-- Выбрать станцию метро --</option>
+                    {% for subway in subways %}
+                        <option value="{{ subway.title }}">{{ subway.title }}</option>
+                    {% endfor %}
+                </select>
+                <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="address-type-subway"
+                      data-valmsg-replace="true"></span>
+            </div>
+
+            <div class="pt-4">
+                <span class="{{ smallLg }}">Показывать сначала:</span>
+            </div>
+            <div class="">
+                <select id="find-master-sorting" name="find-master-sorting"
+                        class="form-control {{ controlLg }} shadow">
+                    <option value="rating">по рейтингу</option>
+                    <option value="address">поблизости от меня</option>
+                </select>
+            </div>
+
+            <div class="text-center pt-4">
+                <input id="btn-find-master" type="submit"
+                       class="btn btn-brand btn-success min-w-500 {{ lbLg }} shadow"
+                       value="&#xf002; Найти мастера">
+            </div>
+        </form>
+    </div>
+    <div class="{{ mobileW_w500_100 }}">
+        <div id="loading-div" class="loader mx-auto" style="display: none;"></div>
+    </div>
+    <div id="find-master-result" class="{{ isMaxW500 }} pt-2">
+    </div>
+{% endblock %}
+
+
+
+{% block contentFindSalon %}
+    <div class="{{ isMaxW500 }}">
+        <form id="find-salon-form" action="/" method="post" role="form">
+            <div class="pt-2">
+                <select id="find-directions" name="find-directions"
+                        class="form-control {{ controlLg }} mb-1 shadow"
+                        data-val="true" data-val-required="Требуется выбрать направление.">
+                    <option value="">-- Выберите направление --</option>
+                    {% for direction in directions %}
+                        <option value="{{ direction.id }}">{{ direction.name }}</option>
+                    {% endfor %}
+                </select>
+                <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="find-directions"
+                      data-valmsg-replace="true"></span>
+            </div>
+
+            <div class="pt-2">
+                <select id="find-address-type" name="find-address-type"
+                        class="form-control {{ controlLg }} mb-1 shadow"
+                        data-val="true" data-val-required="Требуется выбрать местоположение.">
+                    <option value="">-- Выбрать местоположение салона --</option>
+                    <option value="map">на карте</option>
+                    <option value="subway">по станции метро</option>
+                </select>
+                <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="find-address-type"
+                      data-valmsg-replace="true"></span>
+            </div>
+
+            <div id="find-address-type-map" class="pt-2" style="display: none;">
+                {{ block('addressProfile') }}
+            </div>
+            <div id="find-address-type-subway" class="pt-2" style="display: none;">
+                <select id="address-type-subway" name="address-type-subway"
+                        class="find-address-type-group form-control {{ controlLg }} mb-1 shadow"
+                        data-val="true" data-val-required="Требуется выбрать местоположение.">
+                    <option value="">-- Выбрать станцию метро --</option>
+                    {% for subway in subways %}
+                        <option value="{{ subway.title }}">{{ subway.title }}</option>
+                    {% endfor %}
+                </select>
+                <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="address-type-subway"
+                      data-valmsg-replace="true"></span>
+            </div>
+
+            <div class="pt-4">
+                <span class="{{ smallLg }}">Показывать сначала:</span>
+            </div>
+            <div class="">
+                <select id="find-salon-sorting" name="find-salon-sorting"
+                        class="form-control {{ controlLg }} shadow">
+                    <option value="rating">по рейтингу</option>
+                    <option value="address">поблизости от меня</option>
+                </select>
+            </div>
+
+            <div class="text-center pt-4">
+                <input id="btn-find-salon" type="submit"
+                       class="btn btn-brand btn-success min-w-500 {{ lbLg }} shadow"
+                       value="&#xf002; Искать">
+            </div>
+        </form>
+    </div>
+    <div class="{{ mobileW_w500_100 }}">
+        <div id="loading-div" class="loader mx-auto" style="display: none;"></div>
+    </div>
+    <div id="find-salon-result" class="{{ isMaxW500 }} pt-2">
+    </div>
+{% endblock %}
+
+
+{% block contentFindSchool %}
+    <div class="{{ isMaxW500 }}">
+        <form id="find-school-form" action="/" method="post" role="form">
+            <div class="pt-2">
+                <select id="find-directions" name="find-directions"
+                        class="form-control {{ controlLg }} mb-1 shadow"
+                        data-val="true" data-val-required="Требуется выбрать направление.">
+                    <option value="">-- Выберите направление --</option>
+                    {% for direction in directions %}
+                        <option value="{{ direction.id }}">{{ direction.name }}</option>
+                    {% endfor %}
+                </select>
+                <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="find-directions"
+                      data-valmsg-replace="true"></span>
+            </div>
+
+            <div class="pt-2">
+                <select id="find-address-type" name="find-address-type"
+                        class="form-control {{ controlLg }} mb-1 shadow"
+                        data-val="true" data-val-required="Требуется выбрать местоположение.">
+                    <option value="">-- Выбрать местоположение школы --</option>
+                    <option value="map">на карте</option>
+                    <option value="subway">по станции метро</option>
+                </select>
+                <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="find-address-type"
+                      data-valmsg-replace="true"></span>
+            </div>
+
+            <div id="find-address-type-map" class="pt-2" style="display: none;">
+                {{ block('addressProfile') }}
+            </div>
+            <div id="find-address-type-subway" class="pt-2" style="display: none;">
+                <select id="address-type-subway" name="address-type-subway"
+                        class="find-address-type-group form-control {{ controlLg }} mb-1 shadow"
+                        data-val="true" data-val-required="Требуется выбрать местоположение.">
+                    <option value="">-- Выбрать станцию метро --</option>
+                    {% for subway in subways %}
+                        <option value="{{ subway.title }}">{{ subway.title }}</option>
+                    {% endfor %}
+                </select>
+                <span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="address-type-subway"
+                      data-valmsg-replace="true"></span>
+            </div>
+
+            <div class="pt-4">
+                <span class="{{ smallLg }}">Показывать сначала:</span>
+            </div>
+            <div class="">
+                <select id="find-school-sorting" name="find-school-sorting"
+                        class="form-control {{ controlLg }} shadow">
+                    <option value="rating">по рейтингу</option>
+                    <option value="address">поблизости от меня</option>
+                </select>
+            </div>
+
+            <div class="text-center pt-4">
+                <input id="btn-find-school" type="submit"
+                       class="btn btn-brand btn-success min-w-500 {{ lbLg }} shadow"
+                       value="&#xf002; Найти школу">
+            </div>
+        </form>
+    </div>
+    <div class="{{ mobileW_w500_100 }}">
+        <div id="loading-div" class="loader mx-auto" style="display: none;"></div>
+    </div>
+    <div id="find-school-result" class="{{ isMaxW500 }} pt-2">
+    </div>
+{% endblock %}
+
+
+{% block profilePlace %}
+    <div class="row my-3">
+        <div class="{{ lbProfile }} pt-3 {{ smallLg }}">
+            Оказание услуг:<span class="text-danger">*</span>
+        </div>
+        <div class="pl-4 col-xl-10 text-center">
+            <div class="btn-group btn-group-toggle pt-2 mb-2" data-toggle="buttons">
+                <label class="btn btn-outline-info {{ lbLg }} font-weight-bold min-w-150 {% if place == 'my-house' %} active {% endif %}">
+                    <input type="radio" name="profile-place" value="my-house" autocomplete="off"
+                           data-val="true" data-val-required="Требуется выбрать место оказания услуг"
+                            {% if place == 'my-house' %} checked {% endif %}>
+                    Выезд
+                </label>
+                <label class="btn btn-outline-info {{ lbLg }} font-weight-bold min-w-150 {% if place == 'master-house' %} active {% endif %}">
+                    <input type="radio" name="profile-place" value="master-house" autocomplete="off"
+                            {% if place == 'master-house' %} checked {% endif %}>
+                    У мастера
+                </label>
+                <label class="btn btn-outline-info {{ lbLg }} font-weight-bold min-w-150 {% if place == 'all-house' %} active {% endif %}">
+                    <input type="radio" name="profile-place" value="all-house" autocomplete="off"
+                            {% if place == 'all-house' %} checked {% endif %}>
+                    Не важно
+                </label>
+            </div>
+            <br><span class="field-validation-valid {{ smallLg }} text-danger" data-valmsg-for="profile-place"
+                      data-valmsg-replace="true"></span>
+        </div>
+    </div>
+{% endblock %}
+
+
+{#==============================================================================================================================#}
+{#==============================================================================================================================#}
+{#==============================================================================================================================#}
+
+
+{% block javascriptTwigComponents %}
+    {% block javascriptFieldValidation %}
+        <script src="/js/jquery.inputmask.bundle.min.js"></script>
+        <script src="/js/jquery.validate.min.js"></script>
+        <script src="/js/jquery.validate.unobtrusive.min.js"></script>
+        <script src="/js/additional-methods.min.js"></script>
+    {% endblock %}
+
+    {% block javascriptFindMaster %}
+        <script type="text/javascript">
+            jQuery.extend(jQuery.validator.messages, {
+                require_from_group: "Один из типов местоположения должен быть выбран."
+            });
+            jQuery.validator.addClassRules("phone-group", {
+                require_from_group: [1, ".find-address-type-group"]
+            });
+
+            $('#find-address-type').on('change', function () {
+                if (this.value === 'map') {
+                    $('#find-address-type-map').show();
+                    $('#find-address-type-subway').hide();
+                } else if (this.value === 'subway') {
+                    $('#find-address-type-map').hide();
+                    $('#find-address-type-subway').show();
+                }
+            });
+
+            $('#find-master-form').on('submit', function () {
+                return false;
+            });
+
+            $('#btn-find-master').on('click', function () {
+                if ($('#find-master-form').valid() === false) {
+                    return;
+                }
+
+                var postData = {
+                    'direction-id': $('#find-directions').val(),
+                    'work-experience': $('#find-work-experience').val(),
+                    'sort': $('#find-master-sorting').val()
+                };
+
+                if ($('#find-address-type').val() === 'map') {
+                    postData.address = $('#find-address-type-map #profile-address').val();
+                    postData.addressCoord = $('#find-address-type-map #profile-address-coord').val();
+                } else if ($('#find-address-type').val() === 'subway') {
+                    postData.subway = $('#address-type-subway').val();
+                }
+
+                $.ajax({
+                    url: '/lk/findMaster',
+                    dataType: "json",
+                    type: "POST",
+                    data: postData,
+                    success: function (data) {
+                        if (typeof data !== 'undefined' && (data.error === false)) {
+                            if (data.message === '') {
+                                $('#find-master-result').html('Мастера не найдены.');
+                                return;
+                            }
+
+                            $('#find-master-result').html(data.message);
+                        } else {
+                            alert('Ошибка поиска мастера.');
+                        }
+                    },
+                    error: function () {
+                        alert('Ошибка поиска мастера.');
+                    }
+                });
+            });
+        </script>
+    {% endblock %}
+
+
+    {% block javascriptFindSalon %}
+        <script type="text/javascript">
+            jQuery.extend(jQuery.validator.messages, {
+                require_from_group: "Один из типов местоположения должен быть выбран."
+            });
+            jQuery.validator.addClassRules("phone-group", {
+                require_from_group: [1, ".find-address-type-group"]
+            });
+
+            $('#find-address-type').on('change', function () {
+                if (this.value === 'map') {
+                    $('#find-address-type-map').show();
+                    $('#find-address-type-subway').hide();
+                } else if (this.value === 'subway') {
+                    $('#find-address-type-map').hide();
+                    $('#find-address-type-subway').show();
+                }
+            });
+
+            $('#find-salon-form').on('submit', function () {
+                return false;
+            });
+
+            $('#btn-find-salon').on('click', function () {
+                if ($('#find-salon-form').valid() === false) {
+                    return;
+                }
+
+                var postData = {
+                    'direction-id': $('#find-directions').val(),
+                    'sort': $('#find-salon-sorting').val()
+                };
+
+                if ($('#find-address-type').val() === 'map') {
+                    postData.address = $('#find-address-type-map #profile-address').val();
+                    postData.addressCoord = $('#find-address-type-map #profile-address-coord').val();
+                } else if ($('#find-address-type').val() === 'subway') {
+                    postData.subway = $('#address-type-subway').val();
+                }
+
+                $.ajax({
+                    url: '/lk/findSalon',
+                    dataType: "json",
+                    type: "POST",
+                    data: postData,
+                    success: function (data) {
+                        if (typeof data !== 'undefined' && (data.error === false)) {
+                            if (data.message === '') {
+                                $('#find-salon-result').html('Салоны красоты не найдены.');
+                                return;
+                            }
+
+                            $('#find-salon-result').html(data.message);
+                        } else {
+                            alert('Ошибка поиска салона.');
+                        }
+                    },
+                    error: function () {
+                        alert('Ошибка поиска салона.');
+                    }
+                });
+            });
+        </script>
+    {% endblock %}
+
+
+    {% block javascriptFindSchool %}
+        <script type="text/javascript">
+            jQuery.extend(jQuery.validator.messages, {
+                require_from_group: "Один из типов местоположения должен быть выбран."
+            });
+            jQuery.validator.addClassRules("phone-group", {
+                require_from_group: [1, ".find-address-type-group"]
+            });
+
+            $('#find-address-type').on('change', function () {
+                if (this.value === 'map') {
+                    $('#find-address-type-map').show();
+                    $('#find-address-type-subway').hide();
+                } else if (this.value === 'subway') {
+                    $('#find-address-type-map').hide();
+                    $('#find-address-type-subway').show();
+                }
+            });
+
+            $('#find-master-form').on('submit', function () {
+                return false;
+            });
+
+            $('#btn-find-master').on('click', function () {
+                if ($('#find-master-form').valid() === false) {
+                    return;
+                }
+
+                var postData = {
+                    'direction-id': $('#find-directions').val(),
+                    'sort': $('#find-school-sorting').val()
+                };
+
+                if ($('#find-address-type').val() === 'map') {
+                    postData.address = $('#find-address-type-map #profile-address').val();
+                    postData.address_coord = $('#find-address-type-map #profile-address-coord').val();
+                } else if ($('#find-address-type').val() === 'subway') {
+                    postData.subway = $('#address-type-subway').val();
+                }
+
+                $.ajax({
+                    url: '/lk/findSchool',
+                    dataType: "json",
+                    type: "POST",
+                    data: postData,
+                    success: function (data) {
+                        if (typeof data !== 'undefined' && (data.error === false)) {
+                            if (data.message === '') {
+                                $('#find-school-result').html('Мастера не найдены.');
+                                return;
+                            }
+
+                            $('#find-school-result').html(data.message);
+                        } else {
+                            alert('Ошибка поиска мастера.');
+                        }
+                    },
+                    error: function () {
+                        alert('Ошибка поиска мастера.');
+                    }
+                });
+            });
+        </script>
+    {% endblock %}
+
+
+    {% block javascriptRubricator %}
+        <script type="text/javascript" src="/js/jquery.multi-select.min.js"></script>
+        <script type="text/javascript">
+            var profileServices = [];
+            var directionCount = {{ profileDirections|length }};
+            var profileServicesShow = [];
+            {% for profileService in profileServices %}
+            if (typeof profileServices[{{ profileService.direction_id }}] === 'undefined') {
+                profileServices[{{ profileService.direction_id }}] = [];
+            }
+            profileServices[{{ profileService.direction_id }}][{{ profileService.id }}] = {
+                'name': '{{ profileService.name }}',
+                'selected': '{{ profileService.selected }}'
+            };
+            {% if profileService.selectedInDirection == 'selected' %}
+            profileServicesShow[{{ profileService.id }}] = {
+                'name': '{{ profileService.name }}',
+                'selected': '{{ profileService.selected }}'
+            };
+            {% endif %}
+            {% endfor %}
+
+            //отображаем выбранные услуги и направления
+            $('#profile-directions').multiSelect({
+                'containerHTML': '<div id="multi-select-container-directions" class="multi-select-container {{ lbLg }}">',
+                noneText: 'Выберите Вашу область деятельности '
+            });
+            if ($('#profile-services option').size() > 0) {
+                var serviceIdForPresets = [];
+                $.each(profileServicesShow, function (id, name) {
+                    if (typeof name !== 'undefined') {
+                        serviceIdForPresets.push(id.toString());
+                    }
+                });
+                $('#profile-services').multiSelect({
+                    'containerHTML': '<div id="multi-select-container-services" class="multi-select-container {{ lbLg }}">',
+                    noneText: 'Выберите оказываемые услуги ',
+                    presets: [
+                        {
+                            name: 'Выбрать все услуги',
+                            options: serviceIdForPresets
+                        },
+                        {
+                            name: 'Отменить выбор',
+                            options: []
+                        }
+                    ]
+                });
+            } else {
+                $('#profile-services').multiSelect({
+                    'containerHTML': '<div id="multi-select-container-services" class="multi-select-container {{ lbLg }}">',
+                    noneText: 'Выберите оказываемые услуги после выбора области деятельности '
+                });
+            }
+
+
+            //привязываем клики на чекбоксы направлений для подгрузки услуг
+            //обновляем список услуг в комбобоксе
+            function multiSelectServicesRefresh(elemId, servicesDirection) {
+                $('#' + elemId).remove();
+                $('#profile-services-container').append('' +
+                    '<select id="' + elemId + '" name="' + elemId + '[]" multiple></select>'
+                );
+                var serviceIdForPresets = [];
+                $.each(servicesDirection, function (id, serviceObj) {
+                    if (typeof serviceObj !== 'undefined') {
+                        $('#' + elemId).append(
+                            '<option value="' + id + '" ' + serviceObj.selected + '>' + serviceObj.name + '</option>'
+                        );
+                        serviceIdForPresets.push(id.toString());
+                    }
+                });
+
+                $('#multi-select-container-services').remove();
+                if (serviceIdForPresets.length === 0) {
+                    $('#' + elemId).multiSelect({
+                        'containerHTML': '<div id="multi-select-container-services" class="multi-select-container {{ lbLg }}">',
+                        noneText: 'Выберите оказываемые услуги после выбора области деятельности '
+                    });
+                } else {
+                    $('#' + elemId).multiSelect({
+                        'containerHTML': '<div id="multi-select-container-services" class="multi-select-container {{ lbLg }}">',
+                        noneText: 'Выберите оказываемые услуги ',
+                        presets: [
+                            {
+                                name: 'Выбрать все услуги',
+                                options: serviceIdForPresets
+                            },
+                            {
+                                name: 'Отменить выбор',
+                                options: []
+                            }
+                        ]
+                    });
+                }
+
+            }
+
+            //обновляем массив profileServicesShow
+            for (var direction = 0; direction < directionCount; direction++) {
+                var multiSelectDirectionCheckBox = $('#profile-directions_' + direction);
+                multiSelectDirectionCheckBox.attr('direction-id', direction + 1);
+
+                if (typeof profileServices[direction + 1] !== 'undefined' && profileServices[direction + 1].length > 0) {
+                    multiSelectDirectionCheckBox.on('click', function () {
+                        var profileServicesForDirectionId = profileServices[$(this).attr('direction-id')];
+                        if ($(this).prop('checked') === true) {
+                            $.each(profileServicesForDirectionId, function (id, serviceObj) {
+                                if (typeof serviceObj !== 'undefined') {
+                                    profileServicesShow[id] = {
+                                        'name': serviceObj.name,
+                                        'selected': serviceObj.selected
+                                    };
+                                }
+                            });
+                        } else {
+                            $.each(profileServicesForDirectionId, function (id, serviceObj) {
+                                if (typeof serviceObj !== 'undefined') {
+                                    delete profileServicesShow[id];
+                                }
+                            });
+                        }
+                        multiSelectServicesRefresh('profile-services', profileServicesShow);
+                    });
+                }
+            }
+        </script>
+    {% endblock %}
+
+    {% block javascriptAddressProfile %}
+        <script type="text/javascript"
+                src="https://api-maps.yandex.ru/2.1/?apikey={{ yandexGeoKey }}&lang=ru_RU"></script>
+        <script type="text/javascript">
+            var ydxGeoCoord = ('{{ yandexGeoCoord }}').split(',');
+            var ydxGeoZoom = {{ yandexGeoZoom }};
+
+            //Карта
+            $(document).ready(function () {
+                ymaps.ready(init);
+            });
+
+            function init() {
+                var myMap = new ymaps.Map("map", {
+                    center: ydxGeoCoord,
+                    controls: [/*"searchControl",*/ "geolocationControl", "fullscreenControl", "zoomControl"],
+                    zoom: ydxGeoZoom,
+                }, {
+                    searchControlProvider: 'yandex#search',
+                    suppressMapOpenBlock: true
+                });
+                myMap.container.fitToViewport();
+                var myPlacemark;
+
+                //если координаты уже были заданы в профиле, ставим туда маркер (например, на странице просмотра профиля)
+                if ($('#profile-address-coord').val() !== '') {
+                    if (typeof myPlacemark !== 'undefined') {
+                        myPlacemark.geometry.setCoordinates(ydxGeoCoord);
+                    } else {
+                        myPlacemark = createPlacemark(ydxGeoCoord);
+                    }
+
+                    myMap.geoObjects.add(myPlacemark);
+                    getAddress(myPlacemark.geometry.getCoordinates());
+                }
+
+                // Слушаем клик на карте.
+                if ($('#profile-address').length > 0) {
+                    myMap.events.add('click', function (e) {
+                        var coords = e.get('coords');
+
+                        // Если метка уже создана – просто передвигаем ее.
+                        if (typeof myPlacemark !== 'undefined') {
+                            myPlacemark.geometry.setCoordinates(coords);
+                        }
+                        // Если нет – создаем.
+                        else {
+                            myPlacemark = createPlacemark(coords);
+                            myMap.geoObjects.add(myPlacemark);
+                            // Слушаем событие окончания перетаскивания на метке.
+                            myPlacemark.events.add('dragend', function () {
+                                getAddress(myPlacemark.geometry.getCoordinates());
+                            });
+                        }
+                        getAddress(coords);
+                    });
+                }
+
+                // Создание метки.
+                function createPlacemark(coords) {
+                    return new ymaps.Placemark(coords, {
+                        iconCaption: 'поиск...'
+                    }, {
+                        preset: 'islands#violetDotIconWithCaption',
+                        draggable: ($('#profile-address').length > 0)
+                    });
+                }
+
+                // Определяем адрес по координатам (обратное геокодирование).
+                function getAddress(coords) {
+                    myPlacemark.properties.set('iconCaption', 'поиск...');
+                    ymaps.geocode(coords).then(function (res) {
+                        var firstGeoObject = res.geoObjects.get(0);
+
+                        myPlacemark.properties
+                            .set({
+                                // Формируем строку с данными об объекте.
+                                iconCaption: [
+                                    // Название населенного пункта или вышестоящее административно-территориальное образование.
+                                    firstGeoObject.getLocalities().length ? firstGeoObject.getLocalities() : firstGeoObject.getAdministrativeAreas(),
+                                    // Получаем путь до топонима, если метод вернул null, запрашиваем наименование здания.
+                                    firstGeoObject.getThoroughfare() || firstGeoObject.getPremise()
+                                ].filter(Boolean).join(', '),
+                                // В качестве контента балуна задаем строку с адресом объекта.
+                                balloonContent: firstGeoObject.getAddressLine()
+                            });
+
+                        $('#profile-address').val(firstGeoObject.getAddressLine());
+                        $('#profile-address-coord').val(coords);
+                    });
+                }
+
+                // Определяем координаты по полю адреса и проставляем марке на карте
+                $('#profile-address').on('keypress', function (event) {
+                    var keyCode = event.keyCode || event.which;
+                    if (keyCode === 13 && ($(this).val() !== '')) {
+                        ymaps.geocode($(this).val()).then(function (res) {
+                            var coords = res.geoObjects.get(0).geometry.getCoordinates();
+
+                            if (typeof myPlacemark !== 'undefined') {
+                                myPlacemark.geometry.setCoordinates(coords);
+                            } else {
+                                myPlacemark = createPlacemark(coords);
+                            }
+                            getAddress(coords);
+                            myMap.panTo(coords, {
+                                flying: 1
+                            });
+                        });
+                    }
+                });
+            }
+        </script>
+    {% endblock %}
+
+
+    {% block javascriptPhotoProfile %}
+        <script type="text/javascript">
+            var limitUploadFileSize = {{ limitUploadFileSize }};
+
+            //Фото
+            $(document).on('click', '#close-preview', function () {
+                $('.image-preview').popover('hide');
+                // Hover before close the preview
+                $('.image-preview').hover(
+                    function () {
+                        $('.image-preview').popover('show');
+                    },
+                    function () {
+                        $('.image-preview').popover('hide');
+                    }
+                );
+            });
+
+            $(function () {
+                // Create the close button
+                var closebtn = $('<button/>', {
+                    type: "button",
+                    text: 'Х',
+                    id: 'close-preview',
+                    style: 'font-size: initial;',
+                });
+                closebtn.attr("class", "close pull-right {{ lbLg }}");
+
+                // Set the popover default content
+                $('.image-preview').popover({
+                    trigger: 'manual',
+                    html: true,
+                    title: "<strong class='{{ smallLg }}'>Предпросмотр</strong>&nbsp;" + $(closebtn)[0].outerHTML,
+                    content: "Нет изображения",
+                    placement: 'bottom'
+                });
+
+                // Clear event
+                $('.image-preview-clear').click(function () {
+                    $('.image-preview').attr("data-content", "").popover('hide');
+                    $('.image-preview-filename').val("");
+                    $('.image-preview-clear').hide();
+                    $('.image-preview-input input:file').val("");
+                    $(".image-preview-input-title").text("Загрузить");
+                });
+
+                // Create the preview image
+                $(".image-preview-input input:file").change(function () {
+                    var img = $('<img/>', {
+                        id: 'dynamic',
+                        width: 250
+                    });
+                    var file = this.files[0];
+                    if (file.size !== 'undefined' && file.size > limitUploadFileSize * 1024 * 1024) {
+                        alert('Файл слишком велик (более {{ limitUploadFileSize }} Мб).');
+                        $('.image-preview-input input:file').val("");
+                        return false;
+                    }
+                    var reader = new FileReader();
+                    // Set preview image into the popover data-content
+                    reader.onload = function (e) {
+                        $(".image-preview-input-title").text("Изменить");
+                        $(".image-preview-clear").show();
+                        $(".image-preview-filename").val(file.name);
+                        img.attr('src', e.target.result);
+                        $(".image-preview").attr("data-content", $(img)[0].outerHTML).popover("show");
+                    }
+                    reader.readAsDataURL(file);
+                });
+            });
+
+            function deletePortfolioPhoto(photoId) {
+                if (confirm('Удалить фото Вашей работы?') === true) {
+                    $.ajax({
+                        {% if byAdmin == true %}
+                        url: '/lk/deletePortfolioPhotoByAdmin/?userId={{ uId }}&userType={{ uType }}&id=' + photoId,
+                        {% else %}
+                        url: '/lk/deletePortfolioPhoto/?id=' + photoId,
+                        {% endif %}
+                        dataType: "json",
+                        type: "GET",
+                        success: function (data) {
+                            if (data && (data.error === false)) {
+                                $('#div-portfolio-photo-' + photoId).hide();
+                            } else {
+                                alert('Ошибка удаления фото из портфолио.');
+                            }
+                        },
+                        error: function () {
+                            alert('Ошибка удаления фото из портфолио.');
+                        }
+                    });
+                }
+            }
+        </script>
+    {% endblock %}
+{% endblock %}
+
+{% block javascript %}
+//отключем enter для форм
+$('form').on('keyup keypress', function (e) {
+    var keyCode = e.keyCode || e.which;
+    if (keyCode === 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+{{ parent() }}
+{% endblock %}

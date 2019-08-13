@@ -1,0 +1,16 @@
+{
+  "require": {
+    "twig/twig": "^1.37",
+    "swiftmailer/swiftmailer": "^5.4",
+    "monolog/monolog": "^1.24",
+    "ext-curl": "^0.0.0",
+    "ext-json": "^1.2",
+    "morozovsk/websocket": "^4.2",
+    "pusher/pusher-php-server": "^3.3",
+    "ext-gd": "^0.0.0",
+    "gigablah/sphinxphp": "^2.0",
+    "jenssegers/agent": "^2.6",
+    "bootstrap-select/bootstrap-select": "^1.13",
+    "ext-mbstring": "^0.0.0"
+  }
+}

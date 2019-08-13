@@ -1,0 +1,67 @@
+{% extends "Base.twig" %}
+
+{% block title %}Информация об оплате{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="d-flex">
+            <div class="card card-body my-1 shadow-sm">
+                <h4 class="pb-4 {{ hLg }} border-bottom text-center">Информация об оплате</h4>
+                <div class="topic-text ue-content">
+                    <p class="{{ lbLg }}">
+                        Отправка предложений на заказы происходит БЕСПЛАТНО
+                        Вы платите за оказанную вами услугу клиенту по факту 7% от клиента.
+                    </p>
+
+                    <p class="{{ lbLg }}">
+                        Вы получаете смс только от заказов в вашем районе.
+                        Это взаимный выбор — осталось только договориться и сделать услугу.
+                    </p>
+
+                    <h4 class="pt-2 text-center {{ hLg }}">
+                        Сколько стоит объявление на сайте Beautytime24.ru
+                    </h4>
+
+                    <div class="pt-2 w-100 text-center">
+                        <table cellpadding="4" class="{{ lbLg }} mx-auto">
+                            <tr>
+                                <td>
+                                    Оплата вакансий для салонов красоты
+                                </td>
+                                <td>
+                                    <b>200 руб.</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Акции мастеров
+                                </td>
+                                <td>
+                                    <b>100 руб.</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Акции салонов
+                                </td>
+                                <td>
+                                    <b>100 руб.</b>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

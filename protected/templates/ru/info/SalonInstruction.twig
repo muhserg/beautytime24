@@ -1,0 +1,85 @@
+{% extends "Controls.twig" %}
+
+{% block title %}Салонам{% endblock %}
+{% block head %}
+    <script type="text/javascript" src="/js/popper.min.js"></script>
+    {{ parent() }}
+    <meta name="Description"
+          content="У нас Вы найдете: клиентов в салон красоты, мастера под запись, сотрудника в штат, поставщика">
+{% endblock %}
+
+{% block headAdditional %}
+    {{ block('bufOrderHead') }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid pl-0 pr-1">
+        <div class="card-body">
+            <h1 class="pb-4 h-lg text-center">
+                <span class="light-pink">СВОЙ</span> САЛОН<br>КРАСОТЫ?
+            </h1>
+            <div class="text-center">
+                <img src="/img/woman_full.png">
+            </div>
+            <div class="bg-white pb-4">
+                <h2 class="py-4 lb-lg text-center">
+                    У НАС ВЫ НАЙДЕТЕ
+                </h2>
+                <div class="w-100 lb-lg font-weight-bold">
+                    <div class="row mb-4 curr-w-500 mx-auto">
+                        <div class="col bt-border-square mr-4 p-4">
+                            <div class="">
+                                <span class="light-pink">КЛИЕНТОВ</span>
+                                <br>В САЛОН КРАСОТЫ
+                            </div>
+                        </div>
+                        <div class="col bt-border-square ml-4 p-4">
+                            <div class="">
+                                <span class="light-pink">МАСТЕРА</span>
+                                <br>ПОД ЗАПИСЬ
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pt-4 curr-w-500 mx-auto">
+                        <div class="col bt-border-square mr-4 p-4">
+                            <div class="">
+                                <span class="light-pink">СОТРУДНИ
+                                    <br>КА</span>
+                                <br>В ШТАТ
+                            </div>
+                        </div>
+                        <div class="col bt-border-square ml-4 p-4">
+                            <div class="div-v-middle curr-h-120">
+                                <span class="light-pink">ПОСТАВ
+                                    <br>ЩИКА</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-bt-pens-down text-center px-4 pb-4">
+            <h2 class="py-4 lb-lg text-center">
+                НАЙТИ МАСТЕРА КРАСОТЫ ПОД ЗАПИСЬ
+            </h2>
+
+            {{ block('findMasterIndex') }}
+        </div>
+        <div class="bg-bt-pens-down w-100 text-center">
+            <img src="/img/pens_down.jpg" class="w-100">
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block javascriptTwigComponents %}
+    {{ block('javascriptFindMasterIndex') }}
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

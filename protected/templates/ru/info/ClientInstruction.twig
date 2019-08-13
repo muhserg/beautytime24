@@ -1,0 +1,210 @@
+{% extends "Base.twig" %}
+
+{% block title %}Клиентам{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="card card-body shadow-sm">
+            <h1 class="pb-4 border-bottom text-center">{{ siteNameRus }} – Найти мастера теперь легко.</h1>
+            <div class="topic-text ue-content">
+                <div class="flex-fill text-center">
+                    <img src="/img/s1.jpg" class="img-fluid mx-1 my-2" width="200"/>
+                    <img src="/img/s2.jpg" class="img-fluid mx-1 my-2" width="200"/>
+                    <img src="/img/s3.jpg" class="img-fluid mx-1 my-2" width="200"/>
+                    <img src="/img/s4.jpg" class="img-fluid mx-1 my-2" width="200"/>
+                    <img src="/img/s5.jpg" class="img-fluid mx-1 my-2" width="200"/>
+                    <img src="/img/s6.jpg" class="img-fluid mx-1 my-2" width="200"/>
+                    <img src="/img/s7.jpg" class="img-fluid mx-1 my-2" width="200"/>
+                </div>
+
+                <p class="pt-sm-4 pb-sm-2">
+                    <i>Как это работает</i>
+                </p>
+                <p class="pb-sm-2">
+                    1) Выберите категорию
+                    <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 2) Укажите услугу
+                    <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 3) Выберите мастера
+                    <i class="px-2 fa color-pink fa-arrow-circle-right fa-lg"></i> 4) Напишите в чат
+                </p>
+                <p class="pb-sm-2">
+                    Или просто заполните заявку и мастера сами откликнутся на Ваш заказ!
+                </p>
+                <div class="mx-auto text-center pb-sm-2">
+                    <input id="btn-create-order"
+                           class="btn btn-pink btn-brand font-weight-bold mx-auto shadow"
+                           value="Создать заказ"/>
+                </div>
+
+                <p class="pt-3 px-sm-2 text-center">
+                    <i>Наши мастера</i>
+                </p>
+                {% for master in masters %}
+                    <div class="div-find-masters {{ isMaxW500 }} row ml-0 w-100 mr-2 master-short-data  text-center mx-auto shadow"
+                         master-id="{{ master.id }}">
+                        <div class="px-2">
+                            <img class="{{ master.img_class }}" src="{{ master.avatarUrl }}"
+                                 width="{{ imgSmallPhotoWidth }}"
+                                 height="{{ imgSmallPhotoWidth }}">
+                        </div>
+                        <div class="col px-1 vertical-align">
+                            <div class="w-100">
+                                <div class="text-center mx-auto">
+                                    <span>{{ master.fio }}</span><br>
+                                    <span><i class="fa fa-gratipay color-red fa-lg"></i>
+                                            Рейтинг: {{ master.rating }}
+                                        </span>
+                                    {% if master.active == true %}
+                                        <br><span class="btn-success">сейчас на сайте</span>
+                                    {% endif %}
+                                </div>
+                                <div class="text-center mx-auto py-1">
+                                    <nobr>
+                                        <button id="btn-master-message-open-{{ master.id }}" master-id="{{ master.id }}"
+                                                class="btn-master-message-open btn-sm btn-info {{ lbLg }} mr-2 pointer text-center">
+                                            Написать
+                                        </button>
+                                        <button id="btn-profile-{{ master.id }}" master-id="{{ master.id }}"
+                                                class="btn-profile-master btn-sm btn-info {{ lbLg }} text-center pointer">
+                                            Профиль
+                                        </button>
+                                    </nobr>
+                                </div>
+                            </div>
+                        </div>
+                        {% if master.time_begin != null or master.time_end != null %}
+                            <div class="col-2 my-3 btn-pink master-work-time px-1 mr-2 text-center">
+                                <span class="pl-1 pr-2"><i class="fa fa-clock-o fa-lg"></i></span><br>
+                                <span>{{ master.time_begin }}</span><br>
+                                <span>{{ master.time_end }}</span>
+                            </div>
+                        {% endif %}
+                        <div id="master-profile-additional-{{ master.id }}" class="p-1 collapse">
+                            <b>Адрес:</b> {{ master.address }}<br>
+                            <b>Оказываемые услуги:</b> {{ master.services_list }}<br>
+                            <b>Работы мастера:</b>
+                            {% for photo in master.portfolio %}
+                                <img src="{{ photo.photoUrl }}" width="150">
+                            {% endfor %}
+                        </div>
+                        <div id="master-profile-message-{{ master.id }}" class="w-100 text-center p-1 collapse">
+                        <textarea id="create-master-message-{{ master.id }}"
+                                  maxlength="2000" rows="7" placeholder="Сообщение"
+                                  data-val="true" data-val-required="Напишите сообщение."
+                                  class="form-control {{ controlLg }} w-100 shadow"></textarea>
+                            <button id="btn-master-message-send-{{ master.id }}" master-id="{{ master.id }}"
+                                    class="btn-master-message-send btn-sm btn-pink {{ lbLg }} mt-1 pointer text-center">
+                                Отправить
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="text-center mx-auto">
+                    <div class="pt-5">
+                        <i>Отзывы клиентов</i>
+                    </div>
+
+                    {% for review in reviews %}
+                        <div class="div-find-masters {{ isMaxW500 }} row ml-0 w-100 mr-2 master-short-data  text-center mx-auto shadow"
+                             review-id="{{ review.id }}">
+                            <div class="px-2">
+                                <img class="{{ review.img_class }}" src="{{ review.avatarUrl }}"
+                                     width="{{ imgSmallPhotoWidth }}"
+                                     height="{{ imgSmallPhotoWidth }}">
+                            </div>
+                            <div class="col px-1 vertical-align">
+                                <div class="w-100">
+                                    <div class="text-center mx-auto">
+                                        <span><i class="fa fa-clock-o fa-lg"></i>
+                                            {{ review.date }}
+                                        </span>
+
+                                        <br>
+                                        {% for i in 1..review.assessment %}
+                                            <span id="review-assessment-1" number="1"
+                                                  class="fa fa-lg fa-star star-checked"></span>
+                                        {% endfor %}
+                                        {% if review.assessment < 5 %}
+                                            {% for i in review.assessment+1..5 %}
+                                                <span id="review-assessment-1" number="1"
+                                                      class="fa fa-lg fa-star btn-outline-secondary"></span>
+                                            {% endfor %}
+                                        {% endif %}
+
+                                        <br>
+                                        <span><i class="fa fa-comment-o fa-lg"></i>
+                                            Комментарий: {{ review.reviewText }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+{% endblock %}
+
+{% block javascriptTwigComponents %}
+    <script type="text/javascript">
+        $('#btn-create-order').on('click', function (event) {
+            window.location = '/lk/createOrderPage';
+        });
+
+        $('.btn-profile-master').on('click', function (event) {
+            $(this).toggleClass('additional');
+            $('#master-profile-additional-' + $(this).attr('master-id')).toggleClass('collapse');
+        });
+
+        {% if userAuthorizedFlag == true %}
+        $('.btn-master-message-open').on('click', function (event) {
+            $(this).toggleClass('additional');
+            $('#master-profile-message-' + $(this).attr('master-id')).toggleClass('collapse');
+        });
+        {% else %}
+        $('.btn-master-message-open').on('click', function (event) {
+            window.location = '/lk';
+        });
+        {% endif %}
+
+
+        $('.btn-master-message-send').on('click', function (event) {
+            var message = $('#create-master-message-' + $(this).attr('master-id')).val();
+            if (message === '') {
+                alert('Напишите сообщение.');
+                return;
+            }
+
+            $.ajax({
+                url: '/lk/createMessage',
+                dataType: "json",
+                type: "POST",
+                data: {
+                    'message': message,
+                    'master-id': $(this).attr('master-id')
+                },
+                success: function (data) {
+                    if (data && (data.error === false)) {
+                        alert(data.message);
+                        $('#create-master-message-' + data.tech_message).val('');
+                        $('.btn-master-message-open').click();
+                    } else {
+                        alert('Ошибка отправки сообщения мастеру.');
+                    }
+                },
+                error: function () {
+                    alert('Ошибка отправки сообщения мастеру.');
+                }
+            });
+        });
+    </script>
+{% endblock %}

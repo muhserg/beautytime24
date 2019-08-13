@@ -1,0 +1,86 @@
+{% extends "Base.twig" %}
+
+{% block title %}Введите код подтверждения{% endblock %}
+{% block head %}
+    {{ parent() }}
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/jquery.validate.unobtrusive.min.js"></script>
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-body my-2 shadow-sm">
+                <h4 class="pb-4 pt-2 border-bottom text-center">
+                    Введите код подтверждения, отправленный на Ваш телефон
+                </h4>
+                <form action="/auth/phoneCodeConfirm" class="form-horizontal" method="post" role="form">
+                    <div class="validation-summary-valid text-danger" data-valmsg-summary="true">
+                        <ul>
+                            <li style="display:none"></li>
+                        </ul>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+                            <div class="input-group">
+                                <input id="phone-code" name="phone-code"
+                                       class="form-control shadow" data-val="true"
+                                       data-val-required="Требуется заполнить поле 'Код'" placeholder="&#xf044;  Код"
+                                       type="number" value="">
+                            </div>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="phone-code"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1">
+                            <input id="submit-btn" type="submit" class="btn btn-pink font-weight-bold shadow"
+                                   style="border-radius: 15px; width: 100%; font-size: large;" value="Подтвердить"/>
+                        </div>
+                        <div class="pt-3 col-lg-6 offset-lg-3 col-md-10 offset-md-1">
+                            <input id="resend-phone-confirn-code-btn" class="btn btn-info font-weight-bold shadow"
+                                   style="border-radius: 15px; width: 100%; font-size: large;"
+                                   value="Отправить код повторно"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-6 my-3">
+            <h5 class="text-center mt-4 px-5">Если забыли пароль, то его можно восстановить</h5>
+            <div class="text-center mb-5">
+                <a class="btn btn-light shadow font-weight-bold btn-brand" href="/auth/forgotPassword">
+                    Забыли пароль?
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+$(document).ready(function () {
+    $('#resend-phone-confirn-code-btn').click(function () {
+        $.ajax({
+            url: '/auth/resendPhoneCodeConfirm',
+            dataType: "json",
+            type: "GET",
+            success: function (data) {
+                if (data && data.message) {
+                    alert(data.message);
+                } else {
+                    alert('При попытке отправить код подтверждения произошла ошибка.');
+                }
+            },
+            error: function () {
+                alert('При попытке отправить код подтверждения произошла ошибка.');
+            }
+        });
+    });
+});
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "lk/BaseControls.twig" %}
+
+{% block title %}{{ parent() }} - профиль клиента {{ lastName }} {{ firstName }}{% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    {% if userIsAdmin == true %}
+        {{ block('profileAdminMenu') }}
+    {% endif %}
+
+    <div class="row my-3 pl-3">
+        <div class="{{ colCol_4 }} pl-0 ">
+            {% if avatarUrl != null %}
+                <img src="{{ avatarUrl }}" class="w-100 img-fluid master-short-data">
+            {% else %}
+                <span class="{{ smallLg }}">Нет фото.</span>
+            {% endif %}
+        </div>
+        <div class="col {{ smallLg }}">
+            <b>{{ lastName }} {{ firstName }} {{ middleName }}</b>
+            <br><br>
+            <span><i class="fa fa-map-marker color-blue fa-lg"></i>
+                 м. {{ nearSubway }}
+            </span>
+            <br><br>
+            О себе: {{ about }}
+        </div>
+    </div>
+
+    <div class="my-3 {{ smallLg }}">
+            <input id="profile-address-coord" name="profile-address-coord" type="hidden" value="{{ addressCoord }}">
+            <span class="{{ smallLg }}">Адрес: <b>{{ address|default('не указан') }}</b></span>
+            <br><br>
+            <div id="map" class="yandex-map"></div>
+    </div>
+
+{% endblock %}
+
+{% block javascriptTwigComponents %}
+    {{ block('javascriptAddressProfile') }}
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}

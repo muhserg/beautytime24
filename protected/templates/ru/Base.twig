@@ -1,0 +1,222 @@
+<doctype html>
+    <html>
+    <head>
+        {% block head %}
+            <meta charset="utf-8">
+            <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+            <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+            <link rel="stylesheet" href="/css/font-awesome.min.css">
+            <link rel="stylesheet" href="/css/main.css">
+
+            <script type="text/javascript" src="/js/jquery-1.11.0.min.js"></script>
+            <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+
+            <meta name="Keywords"
+                  content="Социальная сеть бьюти мастеров Вакансии Салона красоты Найти мастера Работа для мастера красоты Бьютитайм Мастер под Запись"/>
+            <title>{% block title %}{% endblock %}</title>
+        {% endblock %}
+
+        {% block headAdditional %}
+        {% endblock %}
+    </head>
+    <body>
+    {% block navbar %}
+        <nav class="navbar
+                {% if showBrandBtNotice != true %}
+                    navbar-expand-sm
+                {% elseif isMobile == true %}
+                    navbar-expand-xl
+                {% else %}
+                    navbar-expand-bt
+                {% endif %} bg-bt-darkblue-menu navbar-light pt-0 pb-1 px-3">
+            <a class="navbar-brand mr-1" href="/">
+                <img src="/img/logo_beauty_time.png" height="45" alt="Логотип {{ siteName }}"/>
+            </a>
+            <div class="navbar-brand pb-2">
+                {% if showBrandBtNotice == true %}
+                    <div class="{{ smallLg }} light-pink text-center">
+                        &nbsp;здесь мастера и клиенты находят друг друга
+                    </div>
+                {% else %}
+                    <div class="{{ smallLg }} curr-w-500">&nbsp;</div>
+                {% endif %}
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    aria-controls="collapsibleNavbar" aria-expanded="false" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon {{ navIcon }}"></span>
+            </button>
+            <div class="navbar-collapse collapse {% if showNavbar == true %} show {% endif %}"
+                 id="collapsibleNavbar">
+                {% if showTopHelpLinks == true %}
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item py-2">
+                            <a href="/info/salonInstruction" data-toggle="tooltip" title="Информация для салонов"
+                               class="nav-link btn btn-info-white {{ lbLg }} shadow mx-1 min-w-100">
+                                <i class="fa">&#xf19c;</i>&nbsp;Салонам
+                            </a>
+                        </li>
+                        <li class="nav-item py-2">
+                            <a href="/info/masterInstruction" data-toggle="tooltip" title="Информация для мастеров"
+                               class="nav-link btn btn-info-white {{ lbLg }} shadow mx-1 min-w-100">
+                                <i class="fa">&#xf19d;</i>&nbsp;Мастерам
+                            </a>
+                        </li>
+                        <li class="nav-item py-2">
+                            <a href="/info/clientInstruction" data-toggle="tooltip" title="Информация для клиентов"
+                               class="nav-link btn btn-info-white {{ lbLg }} shadow mx-1 min-w-100">
+                                <i class="fa">&#xf182;</i>&nbsp;Клиентам
+                            </a>
+                        </li>
+                    </ul>
+                {% endif %}
+                {% if loadSummaryStatistic == true %}
+                    {% block statisticSummary %}
+                        <div id="LogoRow" class="flex-fill text-center md-hide {{ mobileHide }}">
+                            <div>
+                                Всего мастеров: <b class="text-nowrap">{{ masterCount }}</b>,
+                                Всего клиентов: <b class="text-nowrap">{{ clientCount }}</b>
+                            </div>
+                        </div>
+                    {% endblock %}
+                {% endif %}
+                <div class="nav-item mb-2 mt-2">
+                    <div class="d-flex justify-content-around">
+                        {% if showLanguageType == true %}
+                            <a href="/lang/change" class="pr-2 pt-2">
+                                <img src="/img/{{ lang }}.png" alt="сменить язык сайта" title="сменить язык сайта">
+                            </a>
+                        {% endif %}
+                        {% if loginControlTextStyle == true %}
+                            {% if userAuthorizedFlag == true %}
+                                <a href="/lk" class="mb-1 mr-1 shadow pr-2">
+                                    <span class="{{ lbLg }} color-pink">{{ userLogin }}</span>
+                                </a>
+                                <span class="{{ lbLg }} color-dark px-2">
+                                    и
+                                </span>
+                                <a href="/auth/logout" class="{{ lbLg }} color-pink shadow pl-2 mb-1 ">
+                                    Выход
+                                </a>
+                            {% else %}
+                                <a href="/auth/register" class="{{ lbLg }} color-pink mb-1 mr-1 shadow">
+                                    Регистрация
+                                </a>
+                                <span class="{{ lbLg }} color-dark px-2">
+                                    и
+                                </span>
+                                <a href="/auth" class="{{ lbLg }} mb-1 color-pink shadow">
+                                    Вход
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            {% if userAuthorizedFlag == true %}
+                                <a href="/lk" class="btn btn-light btn-brand {{ lbLg }} mb-1 mr-1 shadow">
+                                    <span class="color-pink">{{ userLogin }}</span>
+                                </a>
+                                <a href="/auth/logout" class="btn btn-light btn-brand {{ lbLg }} shadow mb-1 ">
+                                    Выход
+                                </a>
+                            {% else %}
+                                <a href="/auth/register" class="btn btn-light btn-brand {{ lbLg }} mb-1 mr-1 shadow">
+                                    Регистрация
+                                </a>
+                                <a href="/auth" class="btn btn-light btn-brand {{ lbLg }} mb-1 shadow">
+                                    Вход
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    {% endblock %}
+
+    {% block baseContent %}
+        <div id="content">
+            <div class="container-fluid body-content bt-light-ground px-0 min-w-650">
+                <div class="container-fluid px-0">
+                    <div id='error-text' class="text-danger pl-2">
+                        {{ errorText | raw }}
+                    </div>
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block footer %}
+        <div class="bg-bt-wave-up w-100 h-10">
+        </div>
+        <div class="bg-bt-darkblue-menu w-100">
+            <div class="bg-bt-wave-down w-100 h-10">
+            </div>
+            <div class="container w-100">
+                <footer class="text-center {{ lbLg }} mt-1 mb-3">
+                    <div class="ml-0 row text-nowrap container-fluid">
+                        <div class="col light-pink">
+                            Все вопросы - <img src="{{ emailInfoImg }}">
+                        </div>
+                        <div class="col">
+                            <a class="color-white" href="/main/feedback">Обратная связь</a>
+                        </div>
+                        <div class="col light-pink">
+                            Реклама на сервисе - <img src="{{ emailPrImg }}">
+                        </div>
+                    </div>
+                    <p></p>
+                    <p class="color-white">&copy; {{ currYear }} – {{ siteName }}</p>
+                    <div class="row">
+                        <div class="col-12 align-self-center">
+                            <div class="row text-secondary text-center">
+                                <small class="col-12 light-pink mb-3">
+                                    Подпишись на нас в соц.сетях
+                                </small>
+                            </div>
+                            {% block socialLinks %}
+                                <div class="mx-0 row">
+                                    <div class="col px-0">
+                                        <a class="btn color-pink shadow" href="https://vk.com/beauty_time_24">
+                                            <i class="fa {{ faSize }}">&#xf189;</i>
+                                        </a>
+                                    </div>
+                                    <div class="col px-0">
+                                        <a class="btn color-pink shadow"
+                                           href="https://facebook.com/groups/248011516127188">
+                                            <i class="fa {{ faSize }}">&#xf082;</i>
+                                        </a>
+                                    </div>
+                                    <div class="col px-0">
+                                        <a class="btn color-pink shadow"
+                                           href="https://instagram.com/beautytime24_top?utm_source=ig_profile_share&igshid=1t08kspsht29g">
+                                            <i class="fa {{ faSize }}">&#xf16d;</i>
+                                        </a>
+                                    </div>
+                                    <div class="col px-0">
+                                        <a class="btn color-pink shadow"
+                                           href="https://www.youtube.com/channel/UC-zibkuByLlNqTnS_VtgDBg">
+                                            <i class="fa {{ faSize }}">&#xf167;</i>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endblock %}
+                        </div>
+                    </div>
+                </footer>
+                <div style="height: 20px;"></div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block javascriptTwigComponents %}
+    {% endblock %}
+
+    <script type="text/javascript">
+        {% block javascript %}
+        {% endblock %}
+    </script>
+
+    {% block yandexMetrika %}
+    {% endblock %}
+    </body>
+    </html>

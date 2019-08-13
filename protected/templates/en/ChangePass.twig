@@ -1,0 +1,80 @@
+{% extends "Base.twig" %}
+
+{% block title %}Смена пароля{% endblock %}
+{% block head %}
+    {{ parent() }}
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/jquery.validate.unobtrusive.min.js"></script>
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-body my-2 shadow-sm">
+                <h4 class="pb-4 pt-2 border-bottom text-center">
+                    Введите новый пароль учетной записи
+                </h4>
+                <form action="/auth/changePass" class="form-horizontal" method="post" role="form">
+                    <input id="linkCodeForChangePass" name="linkCodeForChangePass" type="hidden"
+                           value="{{ linkCodeForChangePass }}">
+                    <div class="validation-summary-valid text-danger" data-valmsg-summary="true">
+                        <ul>
+                            <li style="display:none"></li>
+                        </ul>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+                            <div class="input-group">
+                                <input id="password" name="password"
+                                       class="form-control shadow" data-val="true"
+                                       data-val-length="Значение поля 'Пароль' должно содержать не менее 7 символов."
+                                       data-val-length-max="100" data-val-length-min="7"
+                                       data-val-required="Требуется заполнить поле 'Пароль'"
+                                       placeholder="&#xf023;    Пароль" type="password" value=""
+                                       aria-describedby="Password-error" aria-invalid="true">
+                            </div>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="password"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+                            <div class="input-group">
+                                <input id="confirm-password" name="confirm-password"
+                                       class="form-control shadow" data-val="true"
+                                       data-val-required="Требуется заполнить поле 'Подтверждение пароля'"
+                                       data-val-equalto="Пароль и его подтверждение не совпадают."
+                                       data-val-equalto-other="*.password"
+                                       placeholder="&#xf023;    Подтверждение пароля" type="password" value="">
+                            </div>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="confirm-password"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1">
+                            <input id="submit-btn" type="submit" class="btn btn-pink font-weight-bold shadow"
+                                   style="border-radius: 15px; width: 100%; font-size: large;" value="Изменить пароль"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-6 my-3">
+            <h5 class="text-center mt-4 px-3">Повторная отправка сообщения о смене пароля</h5>
+            <div class="text-center mb-5">
+                <a class="btn btn-light shadow font-weight-bold btn-brand" href="/auth/forgotPassword">Забыли
+                    пароль?</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

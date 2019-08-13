@@ -1,0 +1,24 @@
+{% extends "lk/BaseControls.twig" %}
+
+{% block title %}{{ parent() }} - ошибка {% endblock %}
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block navbar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contentLk %}
+    <div class="justify-content-center w-100 pl-2">
+        {{ errorText }}
+    </div>
+{% endblock %}
+
+
+{% block javascriptTwigComponents %}
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}
